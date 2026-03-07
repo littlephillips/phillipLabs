@@ -211,7 +211,7 @@ export default function Hero() {
       <div
         style={{
           position: "absolute",
-          bottom: 32,
+          bottom: 10,
           left: "50%",
           transform: "translateX(-50%)",
           display: "flex",
