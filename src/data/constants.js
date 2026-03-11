@@ -39,19 +39,26 @@ export const SERVICES = [
 ];
 
 export const PROJECTS = [
-  {
-    tag: "Restaurant",
-    title: "Mama's Kitchen",
-    desc: "Full website + menu management dashboard + WhatsApp ordering system for a Nairobi food business.",
-    stack: ["React", "Node.js", "WhatsApp API"],
-    color: "#c8853a",
+    {
+    tag: "Repair Shop",
+    title: "Estaka Parts",
+    desc: "Automotive parts store website showcasing car fluids, new and used spare parts, and contact information.",
+    stack: ["React", "Tailwind", "Node.js", "WhatsApp API", "Map API", "Firebase", "Google Cloud"],
+    color: "#f0a830",
   },
   {
-    tag: "Boutique",
-    title: "Zuri Boutique",
-    desc: "E-commerce store with product catalogue, M-Pesa payment integration, and stock tracking dashboard.",
-    stack: ["HTML/CSS/JS", "Paystack", "Dashboard"],
-    color: "#8b8fa8",
+    tag: "Event Agency",
+    title: "AllinEvents",
+    desc: "Event management web app for creating, browsing, and organizing events with registration and ticketing features.",
+    stack:  ["React", "Tailwind", "Node.js", "WhatsApp API", "Map API", "Firebase", "Google Cloud"],
+    color: "#ffffff",
+  },
+  {
+    tag: "MicroFinance",
+    title: "Cash Advance",
+    desc: "Web-based microfinance system management for user registration, loan applications, approvals, disbursement, payments, and reporting",
+    stack: ["React", "Tailwind", "Node.js", "Firebase", "Google Cloud"],
+    color: "#19727a",
   },
   {
     tag: "Coaching",
@@ -59,13 +66,6 @@ export const PROJECTS = [
     desc: "Personal brand site + client portal for booking sessions, accessing resources, and managing appointments.",
     stack: ["React", "Calendar API", "CRM"],
     color: "#d4a843",
-  },
-  {
-    tag: "Repair Shop",
-    title: "TechFix Nairobi",
-    desc: "Service tracking system + client-facing site showing repair status in real-time via unique job codes.",
-    stack: ["HTML/CSS/JS", "Firebase", "SMS API"],
-    color: "#8fa8bd",
   },
   {
     tag: "Salon",
