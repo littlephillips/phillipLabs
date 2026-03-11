@@ -46,7 +46,7 @@ export default function Navbar({ active, setActive }) {
           }}
           onClick={() => scrollTo("About")}
         >
-          <span style={{ color: "#e8e4dc" }}>PK</span>
+          <span style={{ color: "#e8e4dc" }}>phillipLabs</span>
           <span style={{ color: "#c8853a" }}>.</span>
         </div>
 

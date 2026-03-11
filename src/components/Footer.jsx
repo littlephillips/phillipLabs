@@ -16,10 +16,10 @@ export default function Footer() {
         {/* Brand + socials */}
         <div>
           <div style={{ fontFamily: "'Playfair Display', serif", fontSize: "1.6rem", fontWeight: 900, color: "#e8e4dc", marginBottom: 14 }}>
-            PK<span style={{ color: "#c8853a" }}>.</span>
+            phillipLabs<span style={{ color: "#c8853a" }}>.</span>
           </div>
           <p style={{ fontSize: 13.5, color: "#9a9590", lineHeight: 1.8, maxWidth: 260, marginBottom: 22 }}>
-            Nairobi-based freelance web developer. Custom digital solutions for Kenyan small businesses.
+            Nairobi based freelance web developer. Custom digital solutions for Kenyan small businesses.
           </p>
           <div style={{ display: "flex", gap: 10 }}>
             {SOCIALS.map((s) => (
@@ -102,7 +102,7 @@ export default function Footer() {
           justifyContent: "space-between", alignItems: "center",
         }}
       >
-        <p style={{ fontSize: 12, color: "#565660" }}>© {year} Phillip Kinuthia. All rights reserved.</p>
+        <p style={{ fontSize: 12, color: "#565660" }}>© {year} phillipLabs. All rights reserved.</p>
         <p style={{ fontSize: 12, color: "#565660" }}>100% Custom Code · No Templates · Nairobi, Kenya</p>
       </div>
     </footer>
