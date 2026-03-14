@@ -238,7 +238,7 @@ export const WHY = [
   {
     num: "03",
     title: "Built for Kenya",
-    desc: "M-Pesa integration, WhatsApp-first flows, Nairobi-based support. I understand the local market.",
+    desc: "Nairobi-based support. I understand the local market.",
   },
   {
     num: "04",

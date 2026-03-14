@@ -14,7 +14,35 @@ import FloatingWhatsApp from "./components/FloatingWhatsApp";
 export default function App() {
   const [active, setActive] = useState("About");
 
-  // Track active section via IntersectionObserver
+  // Initialize Lenis smooth scroll
+  useEffect(() => {
+    const Lenis = window.Lenis;
+    if (!Lenis) return;
+
+    const lenis = new Lenis({
+      duration: 1.1,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+    });
+
+    // Use plain RAF — avoids GSAP ticker time-unit mismatch bug
+    let raf;
+    const animate = (time) => {
+      lenis.raf(time);
+      raf = requestAnimationFrame(animate);
+    };
+    raf = requestAnimationFrame(animate);
+
+    // Keep ScrollTrigger in sync if GSAP is present
+    const ST = window.ScrollTrigger;
+    if (ST) lenis.on("scroll", ST.update);
+
+    return () => {
+      cancelAnimationFrame(raf);
+      lenis.destroy();
+    };
+  }, []);
+
+  // Active section tracking
   useEffect(() => {
     const sections = NAV_LINKS.map((n) =>
       document.getElementById(n.toLowerCase())
@@ -24,13 +52,11 @@ export default function App() {
       (entries) => {
         entries.forEach((e) => {
           if (e.isIntersecting) {
-            setActive(
-              e.target.id.charAt(0).toUpperCase() + e.target.id.slice(1)
-            );
+            setActive(e.target.id.charAt(0).toUpperCase() + e.target.id.slice(1));
           }
         });
       },
-      { threshold: 0.35 }
+      { threshold: 0.3 }
     );
 
     sections.forEach((s) => obs.observe(s));
