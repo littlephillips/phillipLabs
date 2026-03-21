@@ -3,12 +3,20 @@ import { PROJECTS } from "../data/constants";
 
 /* project links */
 const PROJECT_URLS = {
-  "Estaka Parts":       "https://estakaparts.web.app/",
-  "AllinEvents":        "https://allineventsclient.web.app/",
-  "Cash Advance":       "https://cash-advance-72.web.app/",
-  "Peak Performance Co.": "#",
-  "Glam Studio":        "#",
-  "Iron & Sweat Gym":   "#",
+  "Logic Architect":        "https://logicarchitect54.web.app/",  
+  "Admin Logic Architect":  "https://logicarchitectcrm.web.app/crm", 
+
+  "Estaka Parts":           "https://estakaparts.web.app/",
+  "Admin Estaka Parts":     "https://estaka-crm.web.app/",
+
+  "AllinEvents":            "https://allineventsclient.web.app/",
+  "Admin AllinEvents":      "https://allinevents-6be19.web.app/crm",
+
+  "Cash Advance":           "https://cash-advance-72.web.app/",
+  
+  "Peak Performance Co.":   "#",
+  "Glam Studio":            "#",
+  "Iron & Sweat Gym":       "#",
 };
 
 export default function Projects() {

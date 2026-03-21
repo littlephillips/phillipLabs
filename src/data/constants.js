@@ -39,7 +39,22 @@ export const SERVICES = [
 ];
 
 export const PROJECTS = [
-    {
+  {
+    tag: "Online Course",
+    title: "Logic Architect",
+    desc: "Online course that teaches the mental models, pseudocode patterns, and architectural thinking that separate developers who get hired from those who don't",
+    stack: ["React", "Tailwind", "Node.js", "Mpesa Daraja", "Paypal", "Firebase", "Google Cloud"],
+    color: "#36e809",
+  },
+  {
+    tag: "Online Course",
+    title: "Admin Logic Architect",
+    desc: "Admins can control the logic architect platfrom, add courses, manage user access, payment processing, refunds and support.",
+    stack: ["React", "Tailwind", "Node.js", "Firebase", "Google Cloud"],
+    color: "#36e809",
+  },
+
+  {
     tag: "Repair Shop",
     title: "Estaka Parts",
     desc: "Automotive parts store website showcasing car fluids, new and used spare parts, and contact information.",
@@ -47,12 +62,28 @@ export const PROJECTS = [
     color: "#f0a830",
   },
   {
+    tag: "Repair Shop",
+    title: "Admin Estaka Parts",
+    desc: "Owners can manage the Estaka Parts inventory and customer information through this admin panel.",
+    stack: ["React", "Tailwind", "Node.js", "WhatsApp API", "Map API", "Firebase", "Google Cloud"],
+    color: "#f0a830",
+  },
+
+  {
     tag: "Event Agency",
     title: "AllinEvents",
     desc: "Event management web app for creating, browsing, and organizing events with registration and ticketing features.",
     stack:  ["React", "Tailwind", "Node.js", "WhatsApp API", "Map API", "Firebase", "Google Cloud"],
     color: "#ffffff",
   },
+    {
+    tag: "Event Agency",
+    title: "Admin AllinEvents",
+    desc: "Admin can manage the AllinEvents platform, manage bookings create and organize events, and view analytics on event performance and user engagement",
+    stack:  ["React", "Tailwind", "Node.js", "WhatsApp API", "Map API", "Firebase", "Google Cloud"],
+    color: "#ffffff",
+  },
+
   {
     tag: "MicroFinance",
     title: "Cash Advance",
@@ -60,6 +91,8 @@ export const PROJECTS = [
     stack: ["React", "Tailwind", "Node.js", "Firebase", "Google Cloud"],
     color: "#19727a",
   },
+
+
   {
     tag: "Coaching",
     title: "Peak Performance Co.",
