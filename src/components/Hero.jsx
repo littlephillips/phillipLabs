@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 import { useTypewriter } from "../hooks/useTypewriter";
 import { waMsg, STATS } from "../data/constants";
 
-const WORDS = ["Websites.", "Dashboards.", "CRM Systems.", "Digital Tools."];
+const WORDS = ["Websites.", "Dashboards.", "CRM Systems.", "Digital Tools.", "BusinessSolutions.", "Saas Products"];
 
 const WaIcon = ({ size = 18 }) => (
   <svg width={size} height={size} viewBox="0 0 175.216 175.552" fill="currentColor">
@@ -14,243 +14,343 @@ const WaIcon = ({ size = 18 }) => (
 export default function Hero() {
   const typed = useTypewriter(WORDS);
   const canvasRef = useRef(null);
-  const animRef  = useRef(null);
+  const animRef = useRef(null);
 
-  /* Three.js particles */
+  /* ── Three.js: full-bleed immersive background ── */
   useEffect(() => {
     function init() {
       const T = window.THREE;
       const canvas = canvasRef.current;
       if (!T || !canvas) return;
-      const W = canvas.offsetWidth || window.innerWidth;
-      const H = canvas.offsetHeight || window.innerHeight;
-      const renderer = new T.WebGLRenderer({ canvas, alpha:true, antialias:true });
-      renderer.setSize(W,H); renderer.setPixelRatio(Math.min(devicePixelRatio,2));
-      renderer.setClearColor(0x000000,0);
+
+      const W = window.innerWidth;
+      const H = window.innerHeight;
+
+      const renderer = new T.WebGLRenderer({ canvas, alpha: true, antialias: true });
+      renderer.setSize(W, H);
+      renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+      renderer.setClearColor(0x000000, 0);
+
       const scene = new T.Scene();
-      const cam = new T.PerspectiveCamera(55,W/H,0.1,1000);
-      cam.position.z = 6;
-      const N = 2000;
-      const pos=new Float32Array(N*3), col=new Float32Array(N*3), sz=new Float32Array(N);
-      const CA=new T.Color("#d4874a"), CD=new T.Color("#1a2035"), CG=new T.Color("#22c55e");
-      for(let i=0;i<N;i++){
-        const i3=i*3, r=5+Math.random()*9;
-        const th=Math.random()*Math.PI*2, ph=Math.acos(2*Math.random()-1);
-        pos[i3]=r*Math.sin(ph)*Math.cos(th); pos[i3+1]=r*Math.sin(ph)*Math.sin(th); pos[i3+2]=r*Math.cos(ph)-1.5;
-        const roll=Math.random(), c=roll<0.07?CA:roll<0.025?CG:CD, b=0.3+Math.random()*0.7;
-        col[i3]=c.r*b; col[i3+1]=c.g*b; col[i3+2]=c.b*b;
-        sz[i]=roll<0.07?3.5+Math.random():1+Math.random()*1.4;
+      const cam = new T.PerspectiveCamera(60, W / H, 0.1, 2000);
+      cam.position.z = 5;
+
+      /* ── Orbital rings ── */
+      const rings = [];
+      const ringDefs = [
+        { radius: 3.2, tube: 0.005,  color: 0xe0924f, opacity: 0.22, rx: 0.4,  rz: 0.2  },
+        { radius: 4.8, tube: 0.003,  color: 0xe8a96e, opacity: 0.14, rx: -0.6, rz: 0.5  },
+        { radius: 6.2, tube: 0.0025, color: 0x97765a, opacity: 0.09, rx: 1.1,  rz: -0.3 },
+        { radius: 2.0, tube: 0.004,  color: 0x22c55e, opacity: 0.13, rx: 0.9,  rz: 0.7  },
+        { radius: 7.8, tube: 0.002,  color: 0xe0924f, opacity: 0.05, rx: -0.3, rz: 1.2  },
+      ];
+      ringDefs.forEach((rd, idx) => {
+        const geo = new T.TorusGeometry(rd.radius, rd.tube, 2, 300);
+        const mat = new T.MeshBasicMaterial({ color: rd.color, transparent: true, opacity: rd.opacity });
+        const mesh = new T.Mesh(geo, mat);
+        mesh.rotation.x = rd.rx;
+        mesh.rotation.z = rd.rz;
+        scene.add(mesh);
+        rings.push({ mesh, speed: 0.0003 + idx * 0.00015 });
+      });
+
+      /* ── Star / particle field ── */
+      const N = 2600;
+      const pos    = new Float32Array(N * 3);
+      const col    = new Float32Array(N * 3);
+      const sizes  = new Float32Array(N);
+      const phases = new Float32Array(N);
+
+      const cAmber = new T.Color("#e0924f");
+      const cLight = new T.Color("#e8a96e");
+      const cGreen = new T.Color("#22c55e");
+      const cDim   = new T.Color("#1e2540");
+      const cDeep  = new T.Color("#0f1320");
+
+      for (let i = 0; i < N; i++) {
+        const i3 = i * 3;
+        const r  = 2.5 + Math.random() * 13;
+        const th = Math.random() * Math.PI * 2;
+        const ph = Math.acos(2 * Math.random() - 1);
+        pos[i3]     = r * Math.sin(ph) * Math.cos(th);
+        pos[i3 + 1] = r * Math.sin(ph) * Math.sin(th);
+        pos[i3 + 2] = r * Math.cos(ph);
+
+        const roll = Math.random();
+        let c = roll < 0.06 ? cAmber : roll < 0.10 ? cLight : roll < 0.14 ? cGreen : roll < 0.55 ? cDim : cDeep;
+        const b = 0.35 + Math.random() * 0.65;
+        col[i3] = c.r * b; col[i3 + 1] = c.g * b; col[i3 + 2] = c.b * b;
+
+        sizes[i]  = roll < 0.14 ? 2.8 + Math.random() * 2.0 : 0.6 + Math.random() * 1.3;
+        phases[i] = Math.random() * Math.PI * 2;
       }
-      const geo=new T.BufferGeometry();
-      geo.setAttribute("position",new T.BufferAttribute(pos,3));
-      geo.setAttribute("color",new T.BufferAttribute(col,3));
-      geo.setAttribute("size",new T.BufferAttribute(sz,1));
-      const mat=new T.PointsMaterial({size:0.038,vertexColors:true,transparent:true,opacity:0.78,sizeAttenuation:true});
-      const pts=new T.Points(geo,mat); scene.add(pts);
-      let mx=0,my=0;
-      const onM=e=>{mx=(e.clientX/innerWidth-0.5)*2;my=-(e.clientY/innerHeight-0.5)*2};
-      const onR=()=>{const w=canvas.offsetWidth,h=canvas.offsetHeight;renderer.setSize(w,h);cam.aspect=w/h;cam.updateProjectionMatrix()};
-      window.addEventListener("mousemove",onM,{passive:true});
-      window.addEventListener("resize",onR,{passive:true});
-      let t=0;
-      const tick=()=>{
-        animRef.current=requestAnimationFrame(tick); t+=0.0022;
-        pts.rotation.y=t*0.05+mx*0.09; pts.rotation.x=t*0.022+my*0.06;
-        const s=geo.attributes.size;
-        for(let i=0;i<N;i++) if(sz[i]>2.5) s.array[i]=sz[i]*(0.78+0.22*Math.sin(t*2.2+i));
-        s.needsUpdate=true; renderer.render(scene,cam);
+
+      const ptGeo = new T.BufferGeometry();
+      ptGeo.setAttribute("position", new T.BufferAttribute(pos, 3));
+      ptGeo.setAttribute("color",    new T.BufferAttribute(col, 3));
+      ptGeo.setAttribute("size",     new T.BufferAttribute(sizes, 1));
+      const ptMat = new T.PointsMaterial({ size: 0.033, vertexColors: true, transparent: true, opacity: 0.88, sizeAttenuation: true });
+      const pts = new T.Points(ptGeo, ptMat);
+      scene.add(pts);
+
+      /* ── Central pulse sphere ── */
+      const coreGeo = new T.SphereGeometry(0.36, 32, 32);
+      const coreMat = new T.MeshBasicMaterial({ color: 0xe0924f, transparent: true, opacity: 0.07 });
+      const core    = new T.Mesh(coreGeo, coreMat);
+      scene.add(core);
+
+      const glowGeo = new T.TorusGeometry(0.58, 0.014, 2, 120);
+      const glowMat = new T.MeshBasicMaterial({ color: 0xe0924f, transparent: true, opacity: 0.38 });
+      const glow    = new T.Mesh(glowGeo, glowMat);
+      scene.add(glow);
+
+      /* ── Mouse parallax ── */
+      let mx = 0, my = 0, camX = 0, camY = 0;
+      const onM = e => { mx = (e.clientX / innerWidth - 0.5) * 2; my = -(e.clientY / innerHeight - 0.5) * 2; };
+      const onR = () => { const w = innerWidth, h = innerHeight; renderer.setSize(w, h); cam.aspect = w / h; cam.updateProjectionMatrix(); };
+      window.addEventListener("mousemove", onM, { passive: true });
+      window.addEventListener("resize",    onR, { passive: true });
+
+      let t = 0;
+      const tick = () => {
+        animRef.current = requestAnimationFrame(tick);
+        t += 0.0017;
+
+        // Smooth parallax
+        camX += (mx * 0.15 - camX) * 0.035;
+        camY += (my * 0.10 - camY) * 0.035;
+
+        pts.rotation.y = t * 0.05 + camX * 0.45;
+        pts.rotation.x = t * 0.016 + camY * 0.38;
+
+        // Rings drift
+        rings.forEach(({ mesh, speed }, idx) => {
+          mesh.rotation.y += speed;
+          mesh.rotation.x += speed * 0.28 * (idx % 2 === 0 ? 1 : -1);
+        });
+
+        // Pulse bright dots
+        const sa = ptGeo.attributes.size;
+        for (let i = 0; i < N; i++) {
+          if (sizes[i] > 2) sa.array[i] = sizes[i] * (0.76 + 0.24 * Math.sin(t * 2.6 + phases[i]));
+        }
+        sa.needsUpdate = true;
+
+        // Core pulse
+        const p = 0.85 + 0.15 * Math.sin(t * 1.9);
+        core.scale.setScalar(p);
+        coreMat.opacity = 0.04 + 0.07 * Math.sin(t * 1.9);
+        glow.rotation.z = t * 0.85;
+        glow.rotation.x = t * 0.28;
+        glowMat.opacity = 0.18 + 0.2 * Math.sin(t * 1.9);
+
+        renderer.render(scene, cam);
       };
       tick();
-      return ()=>{ window.removeEventListener("mousemove",onM); window.removeEventListener("resize",onR); cancelAnimationFrame(animRef.current); renderer.dispose(); };
-    }
-    if(window.THREE){init();}
-    else{const id=setInterval(()=>{if(window.THREE){clearInterval(id);init();}},80); return ()=>clearInterval(id);}
-    return ()=>cancelAnimationFrame(animRef.current);
-  },[]);
 
-  /* GSAP entrance */
-  useEffect(()=>{
-    const g=window.gsap; if(!g)return;
-    const tl=g.timeline({defaults:{ease:"power3.out"}});
-    tl.fromTo(".h-badge",{opacity:0,y:20},{opacity:1,y:0,duration:0.7},0.15)
-      .fromTo(".h-title",{opacity:0,y:38},{opacity:1,y:0,duration:0.95},0.35)
-      .fromTo(".h-sub",  {opacity:0,y:22},{opacity:1,y:0,duration:0.8},0.58)
-      .fromTo(".h-ctas", {opacity:0,y:18},{opacity:1,y:0,duration:0.7},0.76)
-      .fromTo(".h-stats",{opacity:0,y:16},{opacity:1,y:0,duration:0.65},0.94);
-  },[]);
+      return () => {
+        window.removeEventListener("mousemove", onM);
+        window.removeEventListener("resize", onR);
+        cancelAnimationFrame(animRef.current);
+        renderer.dispose();
+      };
+    }
+
+    if (window.THREE) {
+      return init();
+    } else {
+      const id = setInterval(() => { if (window.THREE) { clearInterval(id); init(); } }, 80);
+      return () => clearInterval(id);
+    }
+  }, []);
+
+  /* ── GSAP entrance ── */
+  useEffect(() => {
+    const g = window.gsap; if (!g) return;
+    const tl = g.timeline({ defaults: { ease: "power3.out" } });
+    tl.fromTo(".h-badge",  { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.65 }, 0.2)
+      .fromTo(".h-title",  { opacity: 0, y: 52 }, { opacity: 1, y: 0, duration: 1.05 }, 0.36)
+      .fromTo(".h-typed",  { opacity: 0, y: 18 }, { opacity: 1, y: 0, duration: 0.7  }, 0.60)
+      .fromTo(".h-sub",    { opacity: 0, y: 22 }, { opacity: 1, y: 0, duration: 0.75 }, 0.74)
+      .fromTo(".h-ctas",   { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.65 }, 0.90)
+      .fromTo(".h-stats",  { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.6  }, 1.06);
+  }, []);
 
   return (
-    <section id="about" style={{
-      minHeight:"100vh", display:"flex", flexDirection:"column",
-      alignItems:"center", justifyContent:"center",
-      textAlign:"center",
-      padding:"100px var(--gutter) 90px",
-      position:"relative", overflow:"hidden",
-    }}>
-      {/* Canvas */}
-      <canvas ref={canvasRef} style={{position:"absolute",inset:0,width:"100%",height:"100%",pointerEvents:"none",zIndex:0}}/>
+    <section
+      id="about"
+      style={{
+        minHeight: "100vh",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        textAlign: "center",
+        padding: "110px var(--gutter) 90px",
+        position: "relative",
+        overflow: "hidden",
+      }}
+    >
+      {/* Canvas — full-bleed behind everything */}
+      <canvas
+        ref={canvasRef}
+        style={{
+          position: "absolute",
+          inset: 0,
+          width: "100%",
+          height: "100%",
+          pointerEvents: "none",
+          zIndex: 0,
+        }}
+      />
 
-      {/* Ambient glows */}
-      <div style={{position:"absolute",top:"38%",left:"50%",transform:"translate(-50%,-50%)",
-        width:"min(700px,90vw)",height:460,
-        background:"radial-gradient(ellipse,rgba(212,135,74,0.1) 0%,transparent 65%)",
-        pointerEvents:"none",zIndex:0}}/>
-      <div style={{position:"absolute",bottom:"15%",right:"8%",
-        width:240,height:240,
-        background:"radial-gradient(ellipse,rgba(37,211,102,0.05) 0%,transparent 70%)",
-        pointerEvents:"none",zIndex:0}}/>
+      {/* Vignette — protects center text readability */}
+      <div style={{
+        position: "absolute", inset: 0, zIndex: 1, pointerEvents: "none",
+        background: [
+          "radial-gradient(ellipse 60% 65% at 50% 50%, transparent 15%, rgba(10,12,18,0.5) 60%, rgba(10,12,18,0.92) 100%)",
+        ].join(","),
+      }} />
 
-      {/* ── Content ── */}
-      <div style={{position:"relative",zIndex:1,width:"100%",maxWidth:920}}>
+      {/* Amber center glow */}
+      <div style={{
+        position: "absolute", top: "42%", left: "50%",
+        transform: "translate(-50%, -50%)",
+        width: "min(700px, 85vw)", height: 420,
+        background: "radial-gradient(ellipse, rgba(212,135,74,0.06) 0%, transparent 70%)",
+        pointerEvents: "none", zIndex: 1,
+      }} />
 
-        {/* Badge */}
-        <div className="h-badge" style={{opacity:0,marginBottom:28}}>
-          <span style={{
-            display:"inline-flex",alignItems:"center",gap:8,
-            background:"var(--amber-dim)",
-            border:"1px solid var(--amber-bd)",
-            borderRadius:100, padding:"7px 18px",
-            fontFamily:"var(--font-mono)",
-            fontSize:"var(--fs-10)",
-            letterSpacing:"0.25em",textTransform:"uppercase",
-            color:"var(--amber)",
-            boxShadow:"0 2px 12px rgba(212,135,74,0.1), 0 1px 0 rgba(255,255,255,0.05) inset",
-          }}>
-            <span style={{
-              width:6,height:6,borderRadius:"50%",
-              background:"var(--amber)",
-              animation:"pulseGlow 2s ease-in-out infinite",
-            }}/>
-            Nairobi-Based Freelance Developer
-          </span>
-        </div>
+      {/* ── All content ── */}
+      <div style={{ position: "relative", zIndex: 2, width: "100%", maxWidth: 860 }}>
 
         {/* Headline */}
         <h1 className="h-title" style={{
-          opacity:0,
-          fontFamily:"var(--font)",
-          fontSize:"var(--fs-hero)",
-          fontWeight:800,
-          letterSpacing:"-0.04em",
-          lineHeight:1.06,
-          marginBottom:22,
-          color:"var(--text-1)",
+          opacity: 0,
+          fontFamily: "var(--font-display)",
+          fontSize: "var(--fs-hero)",
+          fontWeight: 700,
+          letterSpacing: "-0.03em",
+          lineHeight: 1.05,
+          marginBottom: 22,
+          color: "var(--text-1)",
         }}>
-          Hi, I'm Phillip.
-          <br/>
-          <span style={{color:"var(--text-3)",fontWeight:700}}>I build custom </span>
+          Your Business<br />
+          Deserves a{" "}
           <span style={{
-            color:"var(--amber)",
-            background:"linear-gradient(135deg,var(--amber),var(--amber-light))",
-            WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent",backgroundClip:"text",
+            background: "linear-gradient(135deg, var(--amber) 0%, var(--amber-light) 100%)",
+            WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text",
           }}>
-            {typed}
-            <span style={{
-              display:"inline-block",width:"0.06em",marginLeft:3,
-              background:"var(--amber)",verticalAlign:"middle",
-              height:"0.82em",borderRadius:2,
-              animation:"blink 1s step-end infinite",
-            }}/>
+            Real Website.
           </span>
         </h1>
 
+        {/* Typewriter */}
+        <div className="h-typed" style={{
+          opacity: 0,
+          fontFamily: "var(--font-mono)", fontSize: "var(--fs-16)",
+          color: "var(--text-3)", marginBottom: 24,
+          letterSpacing: "0.04em",
+          display: "flex", alignItems: "center", justifyContent: "center", gap: 10,
+          flexWrap: "wrap",
+        }}>
+          <span style={{ color: "var(--amber)", opacity: 0.6 }}>›</span>
+          I build custom{" "}
+          <span style={{ color: "var(--amber)", fontWeight: 700, minWidth: 170, textAlign: "left" }}>
+            {typed}
+            <span style={{
+              display: "inline-block", width: "0.05em", marginLeft: 2,
+              background: "var(--amber)", verticalAlign: "middle",
+              height: "1em", borderRadius: 2,
+              animation: "blink 1s step-end infinite",
+            }} />
+          </span>
+        </div>
+
         {/* Sub */}
         <p className="h-sub" style={{
-          opacity:0,
-          fontFamily:"var(--font)",
-          fontSize:"var(--fs-18)",
-          fontWeight:400,
-          color:"var(--text-3)",
-          maxWidth:560,
-          lineHeight:1.82,
-          margin:"0 auto 44px",
+          opacity: 0,
+          fontSize: "var(--fs-16)", color: "var(--text-3)",
+          maxWidth: 520, lineHeight: 1.85,
+          margin: "0 auto 42px",
         }}>
-          Freelance web developer in Nairobi, Kenya. I build{" "}
-          <strong style={{color:"var(--text-2)",fontWeight:700}}>fully custom</strong>{" "}
-          websites and business systems — cafes, boutiques, coaches, repair shops.{" "}
-          <span style={{color:"var(--amber)",fontWeight:600}}>No templates. Ever.</span>
+          Freelance web developer in Nairobi building{" "}
+          <strong style={{ color: "var(--text-2)", fontWeight: 700 }}>fully custom</strong>{" "}
+          websites and business systems for Kenyan small businesses.{" "}
+          <span style={{ color: "var(--amber)", fontWeight: 600 }}>No templates. Ever.</span>
         </p>
 
         {/* CTAs */}
         <div className="h-ctas" style={{
-          opacity:0,display:"flex",gap:14,
-          flexWrap:"wrap",justifyContent:"center",marginBottom:72,
+          opacity: 0,
+          display: "flex", gap: 14, flexWrap: "wrap",
+          justifyContent: "center", marginBottom: 64,
         }}>
-          {/* Primary WA */}
-          <a href={waMsg("Hi Phillip! I want to order a website. Let's talk.")}
+          <a
+            href={waMsg("Hi Phillip! I want to order a website. Let's talk.")}
             target="_blank" rel="noopener noreferrer"
             className="clay-btn"
-            style={{
-              background:"var(--wa)",color:"#fff",
-              fontSize:"var(--fs-16)",fontWeight:700,
-              padding:"14px 30px",
-              letterSpacing:"-0.01em",
-            }}>
-            <WaIcon size={18}/>
-            Order via WhatsApp
+            style={{ background: "var(--wa)", color: "#fff", fontSize: "var(--fs-16)", fontWeight: 700, padding: "15px 32px" }}
+          >
+            <WaIcon size={18} />
+            Start Your Project
           </a>
-
-          {/* Secondary */}
           <button
-            onClick={()=>document.getElementById("projects")?.scrollIntoView({behavior:"smooth"})}
+            onClick={() => document.getElementById("projects")?.scrollIntoView({ behavior: "smooth" })}
             className="clay-btn"
             style={{
-              background:"var(--surface)",
-              color:"var(--text-2)",
-              border:"1px solid var(--border-2)",
-              fontSize:"var(--fs-16)",fontWeight:700,
-              padding:"14px 30px",
-              letterSpacing:"-0.01em",
-            }}>
-            View Projects
+              background: "rgba(10,12,18,0.65)", backdropFilter: "blur(16px)",
+              color: "var(--text-2)", border: "1px solid var(--border-2)",
+              fontSize: "var(--fs-16)", fontWeight: 600, padding: "15px 28px",
+            }}
+          >
+            See My Work
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-              <path d="M5 12h14M12 5l7 7-7 7"/>
+              <path d="M5 12h14M12 5l7 7-7 7" />
             </svg>
           </button>
         </div>
 
-        {/* Stats */}
+        {/* Stats — frosted glass pill */}
         <div className="h-stats" style={{
-          opacity:0,
-          display:"flex",flexWrap:"wrap",
-          justifyContent:"center",gap:0,
-          borderTop:"1px solid var(--border)",
-          paddingTop:40,
+          opacity: 0,
+          display: "inline-flex", flexWrap: "wrap",
+          justifyContent: "center",
+          background: "rgba(10,12,18,0.62)",
+          backdropFilter: "blur(20px)",
+          border: "1px solid var(--border)",
+          borderRadius: 20,
+          padding: "20px 8px",
+          boxShadow: "0 8px 32px rgba(0,0,0,0.4), 0 1px 0 rgba(255,255,255,0.04) inset",
         }}>
-          {STATS.map(([n,l],i)=>(
+          {STATS.map(([n, l], i) => (
             <div key={l} style={{
-              textAlign:"center",
-              padding:"0 clamp(20px,4vw,44px)",
-              borderRight:i<STATS.length-1?"1px solid var(--border)":"none",
+              textAlign: "center",
+              padding: "0 clamp(18px, 3.5vw, 42px)",
+              borderRight: i < STATS.length - 1 ? "1px solid var(--border)" : "none",
             }}>
               <div style={{
-                fontFamily:"var(--font)",fontWeight:800,
-                fontSize:"var(--fs-32)",
-                color:"var(--amber)",
-                lineHeight:1.1,marginBottom:6,
-                letterSpacing:"-0.03em",
+                fontFamily: "var(--font-display)", fontWeight: 700,
+                fontSize: "var(--fs-32)", color: "var(--amber)",
+                lineHeight: 1.1, marginBottom: 5, letterSpacing: "-0.03em",
               }}>{n}</div>
               <div style={{
-                fontFamily:"var(--font-mono)",
-                fontSize:"var(--fs-10)",
-                letterSpacing:"0.22em",
-                textTransform:"uppercase",
-                color:"var(--text-3)",
+                fontFamily: "var(--font-mono)", fontSize: "var(--fs-10)",
+                letterSpacing: "0.2em", textTransform: "uppercase", color: "var(--text-3)",
               }}>{l}</div>
             </div>
           ))}
         </div>
       </div>
 
-      {/* Scroll hint */}
-      {/* <div style={{
-        position:"absolute",bottom:28,left:"50%",
-        transform:"translateX(-50%)",
-        display:"flex",flexDirection:"column",alignItems:"center",gap:8,zIndex:1,
-      }}>
-        <span style={{fontFamily:"var(--font-mono)",fontSize:"var(--fs-10)",letterSpacing:"0.3em",textTransform:"uppercase",color:"var(--text-4)"}}>scroll</span>
-        <div style={{width:1,height:34,background:"linear-gradient(to bottom,var(--border-2),transparent)",animation:"floatY 2.5s ease-in-out infinite"}}/>
-      </div> */}
+      <style>{`
+        @media(max-width: 600px) {
+          #about { padding: 100px 20px 80px !important; }
+          .h-ctas { flex-direction: column !important; align-items: stretch !important; }
+          .h-ctas a, .h-ctas button { justify-content: center !important; width: 100% !important; }
+          .h-stats > div { padding: 0 12px !important; }
+        }
+      `}</style>
     </section>
   );
 }
