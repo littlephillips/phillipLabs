@@ -44,7 +44,7 @@ export const PROJECTS = [
     title: "Qwetu Movers",
     desc: "Reliable moving and storage services for individuals and businesses in Kenya.",
     stack: ["React", "Tailwind", "Node.js", "Firebase", "Google Cloud"],
-    color: "#36e809",
+    color: "#4a86e7",
   },
   {
     tag: "Online Course",
