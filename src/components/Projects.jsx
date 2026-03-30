@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { PROJECTS } from "../data/constants";
 
 const PROJECT_URLS = {
+  "Qwetu Movers":          "https://qwetumovers254.web.app/",
   "Logic Architect":       "https://logicarchitect54.web.app/",
   "Admin Logic Architect": "https://logicarchitectcrm.web.app/crm",
   "Estaka Parts":          "https://estakaparts.web.app/",

@@ -40,6 +40,13 @@ export const SERVICES = [
 
 export const PROJECTS = [
   {
+    tag: "Logistics",
+    title: "Qwetu Movers",
+    desc: "Reliable moving and storage services for individuals and businesses in Kenya.",
+    stack: ["React", "Tailwind", "Node.js", "Firebase", "Google Cloud"],
+    color: "#36e809",
+  },
+  {
     tag: "Online Course",
     title: "Logic Architect",
     desc: "Online course that teaches the mental models, pseudocode patterns, and architectural thinking that separate developers who get hired from those who don't",
