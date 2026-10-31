@@ -1,228 +1,239 @@
-export const PHONE = "254797321068";
-export const EMAIL = "phillipkinuthia72@gmail.com";
+import { CONTACT_EMAIL } from "../config/site.js"
+
+export const PHONE = "254710715653";
+export const EMAIL = CONTACT_EMAIL;
+export const LOCATION = "Nairobi, Kenya"
 export const WA_BASE = `https://wa.me/${PHONE}`;
 export const waMsg = (msg) => `${WA_BASE}?text=${encodeURIComponent(msg)}`;
 
-export const NAV_LINKS = ["About", "Services", "Projects", "Pricing", "Contact"];
+// update based on developer availability for projects
+export const AVAILABILITY = "Available for projects"
 
+// Swap this for a real Calendly/Google Calendar booking link when set up.
+export const BOOKING_URL = waMsg(
+  "Hi phillipLabs, I'd like to book a free 20-min call to talk about a website/system for my business."
+);
+
+// ---------------------------------------------------------------------------
+// NAVIGATION LINKS
+// ---------------------------------------------------------------------------
+export const NAV_LINKS = ["Work", "Services", "Process", "Pricing", "Contact", "FAQ",  "Blog"];
+
+// ---------------------------------------------------------------------------
+// HERO / POSITIONING
+// ---------------------------------------------------------------------------
+export const HERO = {
+  headline: "Your Business Deserves an Online Presence",
+  headlineAccent: "IT'S TIME, TO DO IT!",
+  sub:
+    "We build Sites wired with SEO, Lead generation, Google analytics, paired with the whatsapp integration, CMS, or CRM system that runs behind them, so Customers can find you and you can Manage it all from one place. Let yours be next ...",
+  // ctaPrimary: "Book a free 20-min call",
+  ctaPrimary: "Text us on WhatsApp",
+  ctaSecondary: "See recent work",
+};
+
+export const PROOF_LOGOS_NOTE =  "Recent projects: real client work, screenshots below.";
+
+// ---------------------------------------------------------------------------
+// SERVICES
+// ---------------------------------------------------------------------------
 export const SERVICES = [
   {
-    icon: "🌐",
+    icon: "Globe2",
     title: "Client-Facing Websites",
-    desc: "Beautiful, fast, responsive sites that represent your brand professionally. Homepages, service listings, contact pages — all custom-coded, zero templates.",
+    desc: "Fast, mobile-first sites that represent your brand properly,homepage, services, contact all hand-coded, zero page builders.",
   },
   {
-    icon: "📊",
-    title: "CRM & Business Dashboards",
-    desc: "Lightweight to full-featured dashboards — manage products, track clients, monitor orders, and run reports all in one place.",
+    icon: "LayoutDashboard",
+    title: "CMS, CRM & Dashboards",
+    desc: "From a content system you can update yourself to a full CRM or ops dashboard manage content, clients, and reports in one place.",
   },
   {
-    icon: "🛒",
-    title: "E-commerce & Payments",
-    desc: "Online stores with M-Pesa & payment gateway integration, inventory management, and order tracking built for your business model.",
+    icon: "ShoppingCart",
+    title: "E-commerce & M-Pesa",
+    desc: "Online stores with M-Pesa/Daraja integration, inventory, and order tracking built around how your business actually sells.",
   },
   {
-    icon: "🔍",
+    icon: "SearchCheck",
     title: "SEO & Performance",
-    desc: "Every site is built with technical SEO baked in — structured data, fast load times, mobile-first, and Google Analytics integration.",
+    desc: "Technical SEO baked in from day one, structured data, fast load times, mobile-first, Google Analytics.",
   },
   {
-    icon: "💬",
+    icon: "MessageCircle",
     title: "WhatsApp & Live Chat",
-    desc: "Seamless customer communication channels embedded directly into your site so leads never slip through the cracks.",
+    desc: "Ordering and enquiries routed straight into WhatsApp so leads never sit in an inbox nobody checks.",
   },
   {
-    icon: "🔄",
+    icon: "RefreshCw",
     title: "Maintenance & Support",
-    desc: "Ongoing subscription plans for updates, security patches, content changes, and analytics reporting — so your site stays fresh.",
+    desc: "Monthly plans for updates, security patches, content changes, and reporting, so the site stays healthy after launch.",
   },
 ];
 
+// ---------------------------------------------------------------------------
 export const PROJECTS = [
+  {
+    tag: "Power and Electrical ",
+    title: "Augtech Enterprises",
+    img: "/assets/img/work/augtech.png",
+    url: "#",
+    desc: "A showcase of Professional electrical and power handlers,it's for individuals and companies  in need of power and electrical solutions.",
+    stack: ["React", "Tailwind", "Node.js", "EmailJs", "Google Cloud"],
+    color: "#ed2fb4",
+  },
   {
     tag: "Logistics",
     title: "Qwetu Movers",
+    img: "/assets/img/work/qwetumovers.jpg",
+    url: "https://qwetumovers.co.ke/",
     desc: "Reliable moving and storage services for individuals and businesses in Kenya.",
-    stack: ["React", "Tailwind", "Node.js", "Firebase", "Google Cloud"],
-    color: "#4a86e7",
+    stack: ["React", "Tailwind", "Node.js", "Firebase", "Cloudinary", "EmailJs", "Google Cloud"],
+    color: "#2f6fed",
   },
   {
     tag: "Online Course",
     title: "Logic Architect",
-    desc: "Online course that teaches the mental models, pseudocode patterns, and architectural thinking that separate developers who get hired from those who don't",
+    img: "/assets/img/work/logicArchitect.jpg",
+    url: "https://logicarchitect54.web.app/",
+    desc: "Online course that teaches the mental models, pseudocode patterns, and architectural thinking that separate developers who get hired from those who don't.",
     stack: ["React", "Tailwind", "Node.js", "Mpesa Daraja", "Paypal", "Firebase", "Google Cloud"],
-    color: "#36e809",
+    color: "#1f9e5c",
   },
   {
     tag: "Online Course",
-    title: "Admin Logic Architect",
-    desc: "Admins can control the logic architect platfrom, add courses, manage user access, payment processing, refunds and support.",
+    title: "Logic Architect — Admin",
+    variant: "admin",
+    img: "/assets/img/work/logicArchitectCrm.jpg",
+    url: "https://logicarchitectcrm.web.app/crm",
+    desc: "Admins control the Logic Architect platform — courses, user access, payment processing, refunds and support.",
     stack: ["React", "Tailwind", "Node.js", "Firebase", "Google Cloud"],
-    color: "#36e809",
+    color: "#1f9e5c",
   },
-
   {
     tag: "Repair Shop",
     title: "Estaka Parts",
-    desc: "Automotive parts store website showcasing car fluids, new and used spare parts, and contact information.",
+    img: "/assets/img/work/estakaparts.png",
+    url: "https://estakaparts.web.app/",
+    desc: "Customer-facing site for browsing parts, requesting quotes, and leaving reviews for Estaka Parts.",
     stack: ["React", "Tailwind", "Node.js", "WhatsApp API", "Map API", "Firebase", "Google Cloud"],
-    color: "#f0a830",
+    color: "#c8862c",
   },
   {
     tag: "Repair Shop",
-    title: "Admin Estaka Parts",
-    desc: "Owners can manage the Estaka Parts inventory and customer information through this admin panel.",
+    title: "Estaka Parts — Admin",
+    variant: "admin",
+    img: "/assets/img/work/estakapart_crm.jpg",
+    url: "https://estaka-crm.web.app/",
+    desc: "Owners manage Estaka Parts' inventory, requests, reviews and a live kill-switch for public write access.",
     stack: ["React", "Tailwind", "Node.js", "WhatsApp API", "Map API", "Firebase", "Google Cloud"],
-    color: "#f0a830",
+    color: "#c8862c",
   },
-
   {
     tag: "Event Agency",
     title: "AllinEvents",
-    desc: "Event management web app for creating, browsing, and organizing events with registration and ticketing features.",
-    stack:  ["React", "Tailwind", "Node.js", "WhatsApp API", "Map API", "Firebase", "Google Cloud"],
-    color: "#ffffff",
+    img: "/assets/img/work/allInvents.jpg",
+    url: "https://allineventsclient.web.app/",
+    desc: "Event management site for creating, browsing, and organizing events with registration and ticketing.",
+    stack: ["React", "Tailwind", "Node.js", "WhatsApp API", "Map API", "Firebase", "Google Cloud"],
+    color: "#7c4dd6",
   },
-    {
+  {
     tag: "Event Agency",
-    title: "Admin AllinEvents",
-    desc: "Admin can manage the AllinEvents platform, manage bookings create and organize events, and view analytics on event performance and user engagement",
-    stack:  ["React", "Tailwind", "Node.js", "WhatsApp API", "Map API", "Firebase", "Google Cloud"],
-    color: "#ffffff",
+    title: "AllinEvents — Admin",
+    variant: "admin",
+    img: "/assets/img/work/allInvents_crm.jpg",
+    url: "https://allinevents-6be19.web.app/crm",
+    desc: "Admin dashboard for bookings, client and event tracking, reviews, and pipeline value across the agency.",
+    stack: ["React", "Tailwind", "Node.js", "WhatsApp API", "Map API", "Firebase", "Google Cloud"],
+    color: "#7c4dd6",
   },
-
   {
     tag: "MicroFinance",
     title: "Cash Advance",
-    desc: "Web-based microfinance system management for user registration, loan applications, approvals, disbursement, payments, and reporting",
+    img: "/assets/img/work/cashdvance.jpg",
+    url: "https://cash-advance-72.web.app/",
+    desc: "Web-based microfinance system for user registration, loan applications, approvals, disbursement, and reporting.",
     stack: ["React", "Tailwind", "Node.js", "Firebase", "Google Cloud"],
-    color: "#19727a",
-  },
-
-
-  {
-    tag: "Coaching",
-    title: "Peak Performance Co.",
-    desc: "Personal brand site + client portal for booking sessions, accessing resources, and managing appointments.",
-    stack: ["React", "Calendar API", "CRM"],
-    color: "#d4a843",
-  },
-  {
-    tag: "Salon",
-    title: "Glam Studio",
-    desc: "Booking website with appointment scheduler, stylist profiles, gallery, and WhatsApp confirmation flow.",
-    stack: ["React", "Google Calendar", "WhatsApp"],
-    color: "#c8853a",
-  },
-  {
-    tag: "Fitness",
-    title: "Iron & Sweat Gym",
-    desc: "Membership management portal with attendance tracking, class schedules, and automated reminders.",
-    stack: ["React", "Node.js", "Dashboard"],
-    color: "#8b8fa8",
+    color: "#1a8f8f",
   },
 ];
 
-export const PACKAGES = [
+
+// ---------------------------------------------------------------------------
+// PROCESS
+// ---------------------------------------------------------------------------
+export const PROCESS = [
   {
-    tier: "Bronze",
-    label: "Starter",
-    price: "7K – 12K",
-    monthly: "700",
-    pages: "1–5 pages",
-    revisions: "1 revision",
-    color: "#3cce14",
-    bg: "rgba(200,133,58,0.08)",
-    border: "rgba(200,133,58,0.3)",
-    glow: "rgba(200,133,58,0.15)",
-    features: [
-      "Homepage & About page",
-      "Service/product listing (view-only)",
-      "Contact page + Google Maps",
-      "Social media & WhatsApp integration",
-      "Fully responsive design",
-      "1 free revision",
-    ],
-    best: "Businesses that just want an online presence.",
+    step: "01",
+    icon: "PhoneCall",
+    title: "Free 20-min call",
+    desc: "We talk through what your business needs, a site, a booking system, an order dashboard and whether it's a fit. No pressure, no obligation.",
   },
   {
-    tier: "Silver",
-    label: "Business",
-    price: "13K - 25k",
-    monthly: "2,000",
-    pages: "5–10 pages",
-    revisions: "2 revisions",
-    color: "#0989f2",
-    bg: "rgba(37, 108, 165, 0.08)",
-    border: "rgba(143,168,189,0.3)",
-    glow: "rgba(143,168,189,0.12)",
-    features: [
-      "Everything in Bronze",
-      "Optional CRM-lite dashboard",
-      "Add/edit services & products",
-      "Track basic inquiries & orders",
-      "WhatsApp integration",
-      "Basic SEO & Google Analytics",
-      "2 free revisions",
-    ],
-    best: "Businesses that want to self-manage and track activity.",
+    step: "02",
+    icon: "FileCheck2",
+    title: "Fixed quote & deposit",
+    desc: "You get a clear price and timeline in writing. A 40% deposit locks in your build slot; the balance is due on delivery.",
   },
   {
-    tier: "Gold",
-    label: "Advanced",
-    price: "25k - 50K",
-    monthly: "5,000",
-    pages: "10–20 pages",
-    revisions: "3 revisions",
-    color: "#d4a843",
-    bg: "rgba(212,168,67,0.1)",
-    border: "rgba(212,168,67,0.4)",
-    glow: "rgba(212,168,67,0.18)",
-    features: [
-      "Everything in Silver",
-      "Full CRM & product management",
-      "Customer & client tracking",
-      "Stock/availability tracking",
-      "Basic reporting & analytics",
-      "Blog setup & enhanced SEO",
-      "Optional ecommerce / payment",
-      "3 free revisions",
-    ],
-    best: "Businesses needing inventory, booking or client tracking.",
-    featured: true,
+    step: "03",
+    icon: "Code2",
+    title: "Build & check-ins",
+    desc: "I build in stages and share progress links as I go, so you're never waiting weeks to see anything.",
   },
   {
-    tier: "Platinum",
-    label: "Enterprise",
-    price: "50k - 100K",
-    monthly: "10,000",
-    pages: "20–30+ pages",
-    revisions: "Unlimited",
-    color: "#cf08ab",
-    bg: "rgba(184,188,220,0.06)",
-    border: "rgba(184,188,220,0.3)",
-    glow: "rgba(184,188,220,0.12)",
-    features: [
-      "Everything in Gold",
-      "Full operations CRM & client database",
-      "Employee accounts & permissions",
-      "Order & appointment tracking",
-      "Automated notifications & reminders",
-      "Advanced analytics & reporting",
-      "Multi-language support",
-      "Dedicated project manager",
-      "Annual redesign credit",
-      "Post-launch marketing kit",
-    ],
-    best: "Full digital ops — marketing, CRM & internal workflow.",
+    step: "04",
+    icon: "Rocket",
+    title: "Launch & handover",
+    desc: "Your site goes live, you get a short walkthrough of anything you'll manage yourself, plus your free revisions.",
+  },
+  {
+    step: "05",
+    icon: "LifeBuoy",
+    title: "Ongoing support (optional)",
+    desc: "Pick a monthly plan for updates and fixes, or call it done, the site is yours either way.",
   },
 ];
 
-export const ADDONS = [
-  { name: "Basic Maintenance", price: "Ksh 700/mo", desc: "Bug fixes, backups, security updates" },
-  { name: "Business Support", price: "Ksh 2,000/mo", desc: "Product updates, small dashboard tweaks" },
-  { name: "Growth Plan", price: "Ksh 5,000/mo", desc: "SEO, analytics reporting, landing pages" },
-  { name: "Premium Support", price: "Ksh 10,000/mo", desc: "Full CRM support, priority assistance" },
+// ---------------------------------------------------------------------------
+// PRICING TERMS
+// ---------------------------------------------------------------------------
+export const PRICING_TERMS = {
+  deposit: "60% deposit to start, balance on delivery.",
+  timeline: "Typical turnaround: 1–3 weeks depending on package.",
+  urgency: "I take on a limited number of builds at a time to keep quality and response time high.",
+  currency: "All prices in Kenyan Shillings (KES).",
+};
+
+export const FAQ = [
+  {
+    q: "How long does a website actually take?",
+    a: "Most Bronze/Silver sites take 1–3 weeks from deposit to launch. Gold and Platinum builds with CRM or ecommerce typically take 3–6 weeks, depending on how much content and integration is involved.",
+  },
+  {
+    q: "What do I need to have ready before we start?",
+    a: "Ideally your business name, logo (if you have one), a rough list of pages/services, and any text or photos you want used. If you don't have these yet, I can help you put together a simple content plan on the call.",
+  },
+  {
+    q: "Do you build on WordPress or Wix?",
+    a: "No — everything is hand-coded, so there's no monthly page-builder fee, no bloated plugins, and the site is genuinely fast. You own the code outright.",
+  },
+  {
+    q: "Can I make changes myself after launch?",
+    a: "Depends on the package. Silver and up include a lightweight dashboard so you can edit products/services yourself. For anything else, revisions are included per your package, and ongoing support plans cover the rest.",
+  },
+  {
+    q: "How does payment work?",
+    a: "A 40% deposit via M-Pesa or bank transfer secures your build slot. The remaining 60% is due when the site is ready to launch.",
+  },
+   {
+    q: "Do I get an invoice and a receipt ?",
+    a: "Yes, An invoice is offered before the design and build process Starts, and a receipt is issued on payment, all for proffessional record keeping and tracking.",
+  },
+  {
+    q: "What if I need something not listed in a package?",
+    a: "Most custom requests (multi-language, booking systems, advanced integrations) can be scoped as an add-on. Mention it on the call and I'll give you a straight price.",
+  },
 ];
 
 export const SOCIALS = [
@@ -264,36 +275,137 @@ export const SOCIALS = [
   },
 ];
 
+
+// ---------------------------------------------------------------------------
+export const PACKAGES = [
+  {
+    tier: "Bronze",
+    label: "Starter",
+    price: "8K – 12K",
+    monthly: "700",
+    pages: "1–5 pages",
+    revisions: "1 revision",
+    color: "#a9764a",
+    icon: "Package",
+    features: [
+      "Homepage & About page",
+      "Service/product listing (view-only)",
+      "Contact page + Google Maps",
+      "Social media & WhatsApp integration",
+      "Fully responsive design",
+      "1 free revision",
+    ],
+    best: "Businesses that just want an online presence.",
+  },
+  {
+    tier: "Silver",
+    label: "Business",
+    price: "13K – 25K",
+    monthly: "1,200",
+    pages: "5–10 pages",
+    revisions: "2 revisions",
+    color: "#7c828c",
+    icon: "Layers",
+    features: [
+      "Everything in Bronze",
+      "Optional CRM-lite dashboard",
+      "Add/edit services & products",
+      "Track basic inquiries & orders",
+      "WhatsApp integration",
+      "Basic SEO & Google Analytics",
+      "2 free revisions",
+    ],
+    best: "Businesses that want to self-manage and track activity.",
+  },
+  {
+    tier: "Gold",
+    label: "Advanced",
+    price: "25K – 50K",
+    monthly: "2,400",
+    pages: "10–20 pages",
+    revisions: "3 revisions",
+    color: "#e07b1f",
+    icon: "Award",
+    features: [
+      "Everything in Silver",
+      "Full CRM & product management",
+      "Customer & client tracking",
+      "Stock/availability tracking",
+      "Basic reporting & analytics",
+      "Blog setup & enhanced SEO",
+      "Optional ecommerce / payment",
+      "3 free revisions",
+    ],
+    best: "Businesses needing inventory, booking or client tracking.",
+    featured: true,
+  },
+  {
+    tier: "Platinum",
+    label: "Enterprise",
+    price: "50K+",
+    monthly: "3,600",
+    pages: "20–30+ pages",
+    revisions: "Unlimited",
+    color: "#0b0b10",
+    icon: "Gem",
+    features: [
+      "Everything in Gold",
+      "Full operations CRM & client database",
+      "Employee accounts & permissions",
+      "Order & appointment tracking",
+      "Automated notifications & reminders",
+      "Advanced analytics & reporting",
+      "Multi-language support",
+      "Dedicated project manager",
+      "Annual redesign credit",
+      "Post-launch marketing kit",
+    ],
+    best: "Full digital ops — marketing, CRM & internal workflow.",
+  },
+];
+
+export const ADDONS = [
+  { name: "Basic Maintenance", price: "Ksh 700/mo", desc: "Bug fixes, backups, security updates" },
+  { name: "Business Support", price: "Ksh 1,200/mo", desc: "Product updates, small dashboard tweaks" },
+  { name: "Growth Plan", price: "Ksh 2,400/mo", desc: "SEO, analytics reporting, landing pages" },
+  { name: "Premium Support", price: "Ksh 3,600/mo", desc: "Full CRM support, priority assistance" },
+];
+
 export const WHY = [
   {
     num: "01",
+    icon: "Code2",
     title: "100% Custom Code",
     desc: "No WordPress, no Wix, no page builders. Every line written from scratch for your specific needs.",
   },
   {
     num: "02",
+    icon: "Layers",
     title: "Flexible Packages",
     desc: "Start small with a simple site. Upgrade to CRM, ecommerce, or full operations as you grow.",
   },
   {
     num: "03",
+    icon: "MapPin",
     title: "Built for Kenya",
-    desc: "Nairobi-based support. I understand the local market.",
+    desc: "Nairobi-based support, WhatsApp-first communication. We understand the local market.",
   },
   {
     num: "04",
+    icon: "TrendingUp",
     title: "SEO from Day One",
-    desc: "Technical SEO, structured data, and performance optimization built in — not bolted on later.",
+    desc: "Technical SEO, structured data, and performance optimization built in, not bolted on later.",
   },
   {
     num: "05",
+    icon: "MessageCircle",
     title: "Order via WhatsApp",
-    desc: "No complicated forms. Just message me directly, describe your vision, and we get started.",
+    desc: "No complicated forms. Just message Us directly, describe your vision, and we get started.",
   },
 ];
 
 export const STATS = [
-  ["7+", "Projects Delivered"],
+  ["10+", "Projects Delivered"],
   ["4+", "Years Experience"],
   ["100%", "Custom Code"],
   ["Kenya", "Based & Available"],

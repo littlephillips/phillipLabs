@@ -1,153 +1,113 @@
-import { useState, useEffect, useRef } from "react";
-import { PACKAGES, ADDONS, waMsg } from "../data/constants";
-import CheckIcon from "./CheckIcon";
+import { Check, Wallet, Clock, ShieldCheck } from "lucide-react";
+import { getIcon } from "../utils/icons";
+import { PACKAGES, ADDONS, PRICING_TERMS, waMsg } from "../data/constants";
+import Reveal from "./Reveal";
+import Wrap from "./Wrap";
 
 export default function Pricing() {
-  const [monthly,setMonthly]=useState(false);
-  const sectionRef=useRef(null);
-
-  useEffect(()=>{
-    const g=window.gsap,ST=window.ScrollTrigger; if(!g||!ST)return;
-    g.registerPlugin(ST);
-    g.fromTo(".pr-hdr",{opacity:0,y:28},{opacity:1,y:0,duration:0.85,scrollTrigger:{trigger:sectionRef.current,start:"top 80%"}});
-    sectionRef.current?.querySelectorAll(".pkg-card").forEach((c,i)=>{
-      g.fromTo(c,{opacity:0,y:32,scale:0.96},{opacity:1,y:0,scale:1,duration:0.65,delay:i*0.09,ease:"power3.out",scrollTrigger:{trigger:c,start:"top 88%"}});
-    });
-    sectionRef.current?.querySelectorAll(".addon-card").forEach((c,i)=>{
-      g.fromTo(c,{opacity:0,y:22},{opacity:1,y:0,duration:0.5,delay:i*0.07,ease:"power3.out",scrollTrigger:{trigger:c,start:"top 90%"}});
-    });
-  },[]);
-
   return (
-    <section id="pricing" ref={sectionRef} style={{padding:"var(--sec-pad) 0"}}>
-      <div className="wrap">
-        {/* Header */}
-        <div className="pr-hdr" style={{opacity:0,marginBottom:52}}>
-          <span style={{fontFamily:"var(--font-mono)",fontSize:"var(--fs-10)",letterSpacing:"0.3em",textTransform:"uppercase",color:"var(--amber)"}}>Transparent Pricing</span>
-          <h2 style={{fontFamily:"var(--font)",fontWeight:800,fontSize:"var(--fs-48)",letterSpacing:"-0.04em",color:"var(--text-1)",marginTop:12,lineHeight:1.08}}>Packages</h2>
-        </div>
+    <section id="pricing" className="py-section bg-[#fafafa]">
+      <Wrap>
+        <Reveal as="h2" className="text-4xl font-semibold tracking-[-0.02em] mb-2.5">
+          Packages & pricing
+        </Reveal>
+        <Reveal as="p" delay={40} className="text-muted max-w-[720px] mb-5">
+          Start where your business is today. Every package can grow into the next, fixed price, agreed upfront.
+        </Reveal>
 
-        {/* Toggle */}
-        <div style={{display:"flex",alignItems:"center",gap:14,marginBottom:52}}>
-          <span style={{fontFamily:"var(--font)",fontSize:"var(--fs-14)",fontWeight:600,color:!monthly?"var(--text-1)":"var(--text-4)",transition:"color 0.3s"}}>One-time</span>
-          <div onClick={()=>setMonthly(!monthly)} style={{
-            width:48,height:26,
-            background:monthly?"var(--amber-dim)":"var(--surface)",
-            border:`1px solid ${monthly?"var(--amber-bd)":"var(--border)"}`,
-            borderRadius:100,position:"relative",cursor:"pointer",
-            boxShadow:"var(--clay-shadow-sm)",transition:"all 0.3s",
-          }}>
-            <div style={{
-              position:"absolute",top:3,left:monthly?24:3,
-              width:18,height:18,borderRadius:"50%",background:"var(--amber)",
-              transition:"left 0.3s cubic-bezier(0.4,0,0.2,1)",
-              boxShadow:"0 0 10px rgba(212,135,74,0.5)",
-            }}/>
-          </div>
-          <span style={{fontFamily:"var(--font)",fontSize:"var(--fs-14)",fontWeight:600,color:monthly?"var(--text-1)":"var(--text-4)",transition:"color 0.3s"}}>Monthly</span>
-        </div>
+        <Reveal as="div" delay={70} className="flex flex-wrap gap-x-[22px] gap-y-2.5 mb-8">
+          <span className="inline-flex items-center gap-[7px] text-[0.85rem] text-muted">
+            <Wallet size={15} strokeWidth={2} className="text-accent shrink-0" /> {PRICING_TERMS.deposit}
+          </span>
+          <span className="inline-flex items-center gap-[7px] text-[0.85rem] text-muted">
+            <Clock size={15} strokeWidth={2} className="text-accent shrink-0" /> {PRICING_TERMS.timeline}
+          </span>
+          <span className="inline-flex items-center gap-[7px] text-[0.85rem] text-muted">
+            <ShieldCheck size={15} strokeWidth={2} className="text-accent shrink-0" /> {PRICING_TERMS.urgency}
+          </span>
+        </Reveal>
 
-        {/* Cards */}
-        <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(260px,1fr))",gap:18,alignItems:"start"}}>
-          {PACKAGES.map((p,i)=><PricingCard key={p.tier} pkg={p} monthly={monthly} idx={i}/>)}
-        </div>
-
-        {/* Addons */}
-        <div style={{marginTop:80}}>
-          <div style={{display:"flex",alignItems:"center",gap:16,marginBottom:30}}>
-            <span style={{fontFamily:"var(--font-mono)",fontSize:"var(--fs-10)",letterSpacing:"0.3em",textTransform:"uppercase",color:"var(--amber)",whiteSpace:"nowrap"}}>Monthly Subscriptions</span>
-            <div style={{flex:1,height:1,background:"var(--border)"}}/>
-          </div>
-          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(220px,1fr))",gap:14}}>
-            {ADDONS.map(a=>(
-              <div key={a.name} className="addon-card clay-sm" style={{opacity:0,padding:"22px 20px",background:"var(--bg-card)",transition:"transform 0.25s, box-shadow 0.25s"}}
-                onMouseEnter={e=>{e.currentTarget.style.transform="translateY(-3px)";}}
-                onMouseLeave={e=>{e.currentTarget.style.transform="translateY(0)";}}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          {PACKAGES.map((p, i) => {
+            const Icon = getIcon(p.icon);
+            return (
+              <Reveal
+                as="div"
+                delay={i * 50}
+                key={p.tier}
+                className={`relative bg-white rounded-2xl px-5 pt-6 pb-[22px] flex flex-col transition-[transform,box-shadow] hover:-translate-y-[5px] ${
+                  p.featured
+                    ? "border border-accent shadow-[0_14px_32px_-16px_rgba(224,123,31,0.32)] hover:shadow-[0_20px_36px_-18px_rgba(16,16,20,0.2)]"
+                    : "border border-line shadow-[0_1px_3px_rgba(16,16,20,0.04)] hover:shadow-[0_20px_36px_-18px_rgba(16,16,20,0.2)]"
+                }`}
+                style={{ borderTop: `3px solid ${p.color}` }}
               >
-                <p style={{fontFamily:"var(--font)",fontWeight:700,fontSize:"var(--fs-16)",color:"var(--text-1)",marginBottom:6}}>{a.name}</p>
-                <p style={{fontFamily:"var(--font)",fontWeight:800,fontSize:"var(--fs-20)",color:"var(--amber)",marginBottom:8}}>{a.price}</p>
-                <p style={{fontSize:"var(--fs-12)",color:"var(--text-3)",lineHeight:1.7}}>{a.desc}</p>
+                {p.featured && (
+                  <span className="absolute -top-3 left-5 bg-accent text-white text-xs font-bold px-3 py-1 rounded-full">
+                    Most popular
+                  </span>
+                )}
+
+                <div
+                  className="w-9 h-9 rounded-[9px] flex items-center justify-center mb-3.5"
+                  style={{ background: `${p.color}16`, color: p.color }}
+                >
+                  <Icon size={19} strokeWidth={1.75} />
+                </div>
+                <div className="text-sm font-bold uppercase tracking-[0.03em]">{p.tier}</div>
+                <div className="text-xs text-muted mb-3.5">{p.label}</div>
+
+                <div className="text-2xl font-bold mb-[3px]">
+                  <span className="text-sm font-semibold text-muted">Ksh</span> {p.price}
+                </div>
+                <div className="text-xs text-muted mb-[18px]">
+                  {p.pages} · {p.revisions}
+                </div>
+
+                <ul className="flex flex-col gap-[9px] mb-[18px] flex-1">
+                  {p.features.map((f) => (
+                    <li key={f} className="text-sm flex gap-[9px] items-start">
+                      <Check size={14} strokeWidth={2.5} className="shrink-0 mt-[3px]" style={{ color: p.color }} />
+                      <span>{f}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                <p className="text-xs text-muted mb-4 leading-[1.5]">
+                  <strong className="text-ink font-semibold">Best for:</strong> {p.best}
+                </p>
+
+                <a
+                  href={waMsg(`Hi phillipLabs, I'm interested in the ${p.tier} package (${p.label}). Can we talk?`)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`text-center py-3 rounded-lg font-semibold text-sm no-underline transition-[filter] hover:brightness-105 ${
+                    p.featured
+                      ? "bg-accent text-white shadow-[0_10px_24px_rgba(224,123,31,0.32)]"
+                      : "bg-transparent text-ink border border-line-strong"
+                  }`}
+                >
+                  Get started
+                </a>
+              </Reveal>
+            );
+          })}
+        </div>
+
+        <Reveal as="div" delay={220} className="mt-12">
+          <h3 className="text-lg font-semibold mb-3.5">Ongoing support add-ons</h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+            {ADDONS.map((a) => (
+              <div key={a.name} className="border border-line rounded-[10px] p-3.5 bg-white">
+                <div className="font-semibold text-sm">{a.name}</div>
+                <div className="text-accent text-sm font-semibold my-1">{a.price}</div>
+                <div className="text-muted text-xs">{a.desc}</div>
               </div>
             ))}
           </div>
-        </div>
-      </div>
+          <p className="text-xs text-muted mt-3.5">{PRICING_TERMS.currency}</p>
+        </Reveal>
+      </Wrap>
     </section>
-  );
-}
-
-function PricingCard({pkg:p,monthly,idx}){
-  return (
-    <div className="pkg-card clay" style={{
-      opacity:0,
-      padding:"30px 24px",position:"relative",overflow:"hidden",
-      transform:p.featured?"translateY(-10px)":"none",
-      border:`1px solid ${p.featured?"var(--amber-bd)":"var(--border)"}`,
-      boxShadow:p.featured
-        ?"0 2px 0 rgba(255,255,255,0.09) inset,0 -2px 0 rgba(0,0,0,0.3) inset,0 20px 60px rgba(212,135,74,0.12),0 4px 16px rgba(0,0,0,0.4)"
-        :"var(--clay-shadow)",
-    }}>
-      {/* Top stripe */}
-      <div style={{position:"absolute",top:0,left:0,right:0,height:3,background:p.color,borderRadius:"22px 22px 0 0",opacity:0.75}}/>
-      <div style={{position:"absolute",top:0,left:0,right:0,height:80,background:`linear-gradient(180deg,${p.color}10,transparent)`,pointerEvents:"none"}}/>
-
-      {p.featured&&(
-        <div style={{
-          position:"absolute",top:14,right:14,
-          fontFamily:"var(--font)",fontSize:"var(--fs-10)",fontWeight:700,
-          letterSpacing:"0.08em",textTransform:"uppercase",
-          background:"var(--amber)",color:"#0a0c12",
-          padding:"3px 12px",borderRadius:100,
-          boxShadow:"0 4px 14px rgba(212,135,74,0.35)",
-        }}>Popular</div>
-      )}
-
-      {/* Tier badge */}
-      <div style={{display:"inline-flex",alignItems:"center",gap:6,marginBottom:18,padding:"4px 12px",background:`${p.color}14`,borderRadius:100,border:`1px solid ${p.color}30`}}>
-        <span style={{width:5,height:5,borderRadius:"50%",background:p.color,display:"block",boxShadow:`0 0 6px ${p.color}`}}/>
-        <span style={{fontFamily:"var(--font-mono)",fontSize:"var(--fs-10)",letterSpacing:"0.2em",textTransform:"uppercase",color:p.color}}>{p.tier}</span>
-      </div>
-
-      <h3 style={{fontFamily:"var(--font)",fontWeight:800,fontSize:"var(--fs-24)",color:"var(--text-1)",letterSpacing:"-0.03em",marginBottom:14}}>{p.label}</h3>
-
-      <div style={{display:"flex",alignItems:"baseline",gap:4,marginBottom:4}}>
-        <span style={{fontFamily:"var(--font-mono)",fontSize:"var(--fs-12)",color:"var(--text-3)"}}>Ksh</span>
-        <span style={{fontFamily:"var(--font)",fontWeight:800,fontSize:"var(--fs-32)",color:"var(--text-1)",letterSpacing:"-0.04em"}}>{monthly?p.monthly:p.price}</span>
-        {monthly&&<span style={{fontFamily:"var(--font-mono)",fontSize:"var(--fs-12)",color:"var(--text-3)"}}>/mo</span>}
-      </div>
-
-      <p style={{fontFamily:"var(--font-mono)",fontSize:"var(--fs-10)",color:"var(--text-4)",letterSpacing:"0.06em",marginBottom:22}}>{p.pages} · {p.revisions}</p>
-
-      <div style={{height:1,background:"var(--border)",marginBottom:20}}/>
-
-      <ul style={{listStyle:"none",display:"flex",flexDirection:"column",gap:10,marginBottom:26}}>
-        {p.features.map(f=>(
-          <li key={f} style={{display:"flex",alignItems:"flex-start",gap:10,fontSize:"var(--fs-14)",color:"var(--text-2)",lineHeight:1.6}}>
-            <CheckIcon color={p.color}/>{f}
-          </li>
-        ))}
-      </ul>
-
-      <a href={waMsg(`Hi Phillip! I'm interested in the ${p.tier} package (Ksh ${monthly?p.monthly+"/mo":p.price}). Let's talk!`)}
-        target="_blank" rel="noopener noreferrer"
-        className="clay-btn"
-        style={{
-          display:"flex",justifyContent:"center",
-          padding:"13px 20px",
-          fontSize:"var(--fs-14)",fontWeight:700,
-          letterSpacing:"0.01em",
-          background:p.featured?p.color:"transparent",
-          color:p.featured?"#0a0c12":p.color,
-          border:`1.5px solid ${p.color}`,
-          marginBottom:16,width:"100%",
-          boxShadow:p.featured?`0 6px 20px ${p.color}40,0 1px 0 rgba(255,255,255,0.1) inset`:"0 4px 12px rgba(0,0,0,0.25)",
-        }}>
-        Get Started →
-      </a>
-
-      <p style={{fontSize:"var(--fs-12)",color:"var(--text-3)",lineHeight:1.7,paddingTop:12,borderTop:"1px solid var(--border)"}}>
-        <span style={{color:"var(--text-2)",fontWeight:700}}>Best for:</span> {p.best}
-      </p>
-    </div>
   );
 }

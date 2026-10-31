@@ -1,184 +1,193 @@
-import { useState, useEffect } from "react";
-import { NAV_LINKS, waMsg } from "../data/constants";
+import { useState, useEffect, useRef, useCallback } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { NAV_LINKS, BOOKING_URL, AVAILABILITY } from "../data/constants";
+import Wrap from "./Wrap";
 
-const WaIcon = ({ size = 16 }) => (
-  <svg width={size} height={size} viewBox="0 0 175.216 175.552" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-    <path d="M87.6 0C39.3 0 0 39.3 0 87.6c0 15.5 4.1 30.2 11.3 43L0 175.6l46.5-11.2c12.4 6.5 26.5 10.2 41.1 10.2 48.3 0 87.6-39.3 87.6-87.6C175.2 39.3 135.9 0 87.6 0zm0 160.3c-13.6 0-26.4-3.7-37.3-10.2l-2.7-1.6-27.7 7 7.3-26.9-1.7-2.8C18.7 115.2 15 101.7 15 87.6 15 47.5 47.5 15 87.6 15c40.1 0 72.6 32.5 72.6 72.6 0 40.1-32.5 72.7-72.6 72.7z"/>
-    <path d="M127.8 105.7c-2.1-1-12.4-6.1-14.3-6.8-1.9-.7-3.3-1-4.7.9-1.4 1.9-5.4 6.8-6.6 8.2-1.2 1.4-2.4 1.6-4.5.5-2.1-1-8.8-3.2-16.8-10.3-6.2-5.5-10.4-12.3-11.6-14.4-1.2-2.1-.1-3.2 0.9-4.2.9-.9 2.1-2.4 3.1-3.6 1-1.2 1.4-2.1 2.1-3.5.7-1.4.4-2.6-.2-3.7-.5-1-4.7-11.3-6.4-15.5-1.7-4.1-3.4-3.5-4.7-3.6-.6-.1-2-.1-4-.1s-4.9.8-7 2.9c-2.1 2.1-8 7.8-8 19 0 11.2 8.1 22.1 9.3 23.6 1.2 1.5 15.9 24.3 38.6 34.1 5.4 2.3 9.6 3.7 12.9 4.7 5.4 1.7 10.3 1.5 14.2.9 4.3-.7 13.3-5.4 15.2-10.7 1.9-5.2 1.9-9.7 1.3-10.6-.5-.9-2-1.5-4.1-2.5z"/>
-  </svg>
-);
+function slugFor(link) {
+  return link.toLowerCase();
+}
 
-export default function Navbar({ active, setActive }) {
+export default function Navbar() {
+  const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState("");
+  const location = useLocation();
+  const navigate = useNavigate();
+  const panelRef = useRef(null);
+  const burgerRef = useRef(null);
 
   useEffect(() => {
-    const fn = () => setScrolled(window.scrollY > 50);
-    window.addEventListener("scroll", fn, { passive: true });
-    return () => window.removeEventListener("scroll", fn);
+    const onScroll = () => setScrolled(window.scrollY > 8);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  const scrollTo = (id) => {
-    document.getElementById(id.toLowerCase())?.scrollIntoView({ behavior: "smooth" });
-    setActive(id);
-    setMenuOpen(false);
-  };
+  useEffect(() => {
+    if (location.pathname !== "/") {
+      setActiveSection("");
+      return;
+    }
+    const ids = NAV_LINKS.filter((l) => l !== "Blog").map(slugFor);
+    const sections = ids.map((id) => document.getElementById(id)).filter(Boolean);
+    if (sections.length === 0) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((e) => e.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+        if (visible) setActiveSection(visible.target.id);
+      },
+      { rootMargin: "-45% 0px -50% 0px", threshold: [0, 0.25, 0.5, 1] }
+    );
+    sections.forEach((s) => observer.observe(s));
+    return () => observer.disconnect();
+  }, [location.pathname]);
+
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e) => {
+      if (e.key === "Escape") {
+        setOpen(false);
+        burgerRef.current?.focus();
+      }
+    };
+    const onClick = (e) => {
+      if (panelRef.current && !panelRef.current.contains(e.target) && !burgerRef.current.contains(e.target)) {
+        setOpen(false);
+      }
+    };
+    document.addEventListener("keydown", onKey);
+    document.addEventListener("mousedown", onClick);
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.removeEventListener("mousedown", onClick);
+      document.body.style.overflow = "";
+    };
+  }, [open]);
+
+  const goToSection = useCallback(
+    (link) => {
+      setOpen(false);
+      const id = slugFor(link);
+      if (link === "Blog") {
+        navigate("/blog");
+        return;
+      }
+      if (location.pathname !== "/") {
+        navigate(`/#${id}`);
+        return;
+      }
+      const el = document.getElementById(id);
+      if (el) el.scrollIntoView({ behavior: "smooth" });
+    },
+    [location.pathname, navigate]
+  );
 
   return (
-    <>
-      {/* ── Nav bar ── */}
-      <nav style={{
-        position: "fixed", top: 0, left: 0, right: 0, zIndex: 1000,
-        height: 70,
-        background: scrolled ? "rgba(10,12,18,0.9)" : "transparent",
-        backdropFilter: scrolled ? "blur(20px) saturate(180%)" : "none",
-        borderBottom: scrolled ? "1px solid var(--border)" : "1px solid transparent",
-        transition: "background 0.4s, border-color 0.4s",
-      }}>
-        {/* Full-width inner row */}
-        <div className="wrap" style={{
-          height: "100%",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          gap: 24,
-        }}>
+    <header
+      className={`sticky top-0 z-[100] bg-white border-b border-line transition-shadow ${
+        scrolled ? "shadow-[0_4px_20px_rgba(16,16,20,0.05)]" : ""
+      }`}
+    >
+      <Wrap className="flex items-center justify-between h-[68px]">
+        <Link to="/" className="flex items-center gap-[9px] no-underline focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-2 rounded-md">
+          <img src="/assets/img/logo-mark.png" alt="" className="w-7 h-7 object-contain rounded-[7px] bg-ink" />
+          <span className="font-bold text-[1.12rem] tracking-[-0.01em] text-ink whitespace-nowrap">
+            phillip<span className="text-accent">Labs</span>
+          </span>
+        </Link>
 
-          {/* Logo */}
-          <div onClick={() => scrollTo("About")} style={{
-            fontFamily: "var(--font)", fontWeight: 800,
-            fontSize: "var(--fs-20)",
-            letterSpacing: "-0.04em",
-            cursor: "pointer", userSelect: "none", flexShrink: 0,
-            color: "var(--text-1)",
-          }}>
-            phillip<span style={{ color: "var(--amber)" }}>Labs</span><span style={{ color: "var(--amber)" }}>.</span>
-          </div>
-
-          {/* Desktop nav — fills the middle */}
-          <div className="desk-nav" style={{
-            flex: 1,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: 2,
-          }}>
-            {NAV_LINKS.map((l) => (
-              <button key={l} onClick={() => scrollTo(l)} style={{
-                background: "none", border: "none", cursor: "pointer",
-                fontFamily: "var(--font)",
-                fontSize: "var(--fs-14)",
-                fontWeight: active === l ? 700 : 500,
-                color: active === l ? "var(--text-1)" : "var(--text-3)",
-                padding: "8px 16px", borderRadius: 10,
-                transition: "color 0.2s, background 0.2s",
-                position: "relative",
-              }}
-              onMouseEnter={e => { if (active !== l) { e.currentTarget.style.color="var(--text-2)"; e.currentTarget.style.background="rgba(255,255,255,0.04)"; }}}
-              onMouseLeave={e => { if (active !== l) { e.currentTarget.style.color="var(--text-3)"; e.currentTarget.style.background="none"; }}}
+        <nav className="hidden lg:flex items-center gap-[30px]" aria-label="Primary">
+          {NAV_LINKS.map((link) => {
+            const id = slugFor(link);
+            const isActive = link !== "Blog" ? activeSection === id : location.pathname.startsWith("/blog");
+            return (
+              <button
+                key={link}
+                onClick={() => goToSection(link)}
+                aria-current={isActive ? "true" : undefined}
+                className={`relative bg-transparent border-none cursor-pointer font-sans text-sm font-semibold py-1.5 tracking-[0.01em] group focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-2 ${
+                  isActive ? "text-ink" : "text-muted hover:text-ink"
+                }`}
               >
-                {l}
-                {active === l && <span style={{
-                  position:"absolute", bottom:4, left:"50%",
-                  transform:"translateX(-50%)",
-                  width:5, height:5, borderRadius:"50%",
-                  background:"var(--amber)",
-                  boxShadow:"0 0 8px var(--amber)",
-                  display:"block",
-                  animation: "pulseGlow 2s ease-in-out infinite",
-                }} />}
+                {link}
+                <span
+                  className={`absolute left-0 right-0 -bottom-0.5 h-0.5 rounded bg-accent origin-left transition-transform duration-200 ${
+                    isActive ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
+                  }`}
+                />
               </button>
-            ))}
-          </div>
+            );
+          })}
+          <span className="flex items-center gap-[10px] text-xs font-medium text-muted border-l border-line pl-5 whitespace-nowrap">
+            <span className="relative inline-block w-[8px] h-[8px] rounded-full bg-available">
+              <span className="absolute -inset-[4px] rounded-full border border-available animate-orbit-pulse motion-reduce:animate-none" />
+            </span> 
+            {AVAILABILITY}
+          </span>
+        </nav>
 
-          {/* WhatsApp CTA */}
-          <a href={waMsg("Hi Phillip, I'd like to discuss a website project!")}
-            target="_blank" rel="noopener noreferrer"
-            className="desk-nav clay-btn"
-            style={{
-              background: "var(--wa)",
-              color: "#fff",
-              fontSize: "var(--fs-14)",
-              fontWeight: 700,
-              padding: "10px 22px",
-              flexShrink: 0,
-              letterSpacing: "-0.01em",
-            }}>
-            <WaIcon size={16} />
-            WhatsApp Me
-          </a>
+        <a
+          href={BOOKING_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="hidden lg:inline-flex bg-accent text-white px-5 py-2.5 rounded-lg text-sm font-semibold no-underline shadow-[0_4px_14px_rgba(224,123,31,0.28)] transition-[filter,transform] hover:brightness-105 hover:-translate-y-px focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-2"
+        >
+          Book a call
+        </a>
 
-          {/* Hamburger */}
-          <button onClick={() => setMenuOpen(!menuOpen)} className="ham" style={{
-            display:"none", flexShrink:0,
-            background: "var(--surface)",
-            border: "1px solid var(--border)",
-            borderRadius: 12, cursor:"pointer",
-            width:42, height:42,
-            alignItems:"center", justifyContent:"center",
-            flexDirection:"column", gap:5,
-            boxShadow: "var(--clay-shadow-sm)",
-          }}>
-            {[0,1,2].map(i => (
-              <span key={i} style={{
-                display:"block", height:1.5, borderRadius:2,
-                background: menuOpen && i===1 ? "transparent" : "var(--text-2)",
-                width: i===1 ? (menuOpen ? 0 : 13) : 18,
-                transform: menuOpen && i===0 ? "rotate(45deg) translate(0,3px)" :
-                           menuOpen && i===2 ? "rotate(-45deg) translate(0,-3px)" : "none",
-                transition:"all 0.28s",
-              }} />
-            ))}
+        <button
+          ref={burgerRef}
+          onClick={() => setOpen((o) => !o)}
+          aria-label={open ? "Close menu" : "Open menu"}
+          aria-expanded={open}
+          aria-controls="mobile-nav-panel"
+          className="lg:hidden flex flex-col justify-center gap-[5px] w-11 h-11 bg-transparent border-none cursor-pointer rounded-md focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-2"
+        >
+          <span className={`block w-5 h-0.5 mx-auto rounded bg-ink transition-transform duration-200 ${open ? "translate-y-[7px] rotate-45" : ""}`} />
+          <span className={`block w-5 h-0.5 mx-auto rounded bg-ink transition-opacity duration-200 ${open ? "opacity-0" : ""}`} />
+          <span className={`block w-5 h-0.5 mx-auto rounded bg-ink transition-transform duration-200 ${open ? "-translate-y-[7px] -rotate-45" : ""}`} />
+        </button>
+      </Wrap>
+
+      <div
+        id="mobile-nav-panel"
+        ref={panelRef}
+        role="dialog"
+        aria-modal="true"
+        aria-label="Mobile navigation"
+        className={`absolute top-full left-0 right-0 bg-white border-t border-b border-line px-gutter pt-2 pb-[22px] z-[99] shadow-[0_16px_32px_-12px_rgba(16,16,20,0.14)] transition-all duration-200 ${
+          open ? "flex flex-col opacity-100 translate-y-0" : "hidden opacity-0 -translate-y-2"
+        }`}
+      >
+        {NAV_LINKS.map((link) => (
+          <button
+            key={link}
+            onClick={() => goToSection(link)}
+            className="block w-full text-left py-3.5 bg-transparent border-none border-b border-line text-base font-semibold text-ink cursor-pointer focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-2"
+          >
+            {link}
           </button>
-        </div>
-      </nav>
-
-      {/* Mobile menu */}
-      <div className="mobile-menu" style={{
-        position:"fixed", top:70, left:0, right:0, zIndex:999,
-        background:"rgba(10,12,18,0.97)",
-        backdropFilter:"blur(24px)",
-        padding: menuOpen ? "20px var(--gutter) 28px" : "0 var(--gutter)",
-        opacity: menuOpen ? 1 : 0,
-        pointerEvents: menuOpen ? "all" : "none",
-        transform: menuOpen ? "translateY(0)" : "translateY(-6px)",
-        transition:"opacity 0.28s, transform 0.28s",
-        display:"none",
-        borderBottom: "1px solid var(--border)",
-      }}>
-        {NAV_LINKS.map(l => (
-          <button key={l} onClick={() => scrollTo(l)} style={{
-            display:"block", width:"100%",
-            background:"none", border:"none",
-            borderBottom:"1px solid var(--border)",
-            cursor:"pointer", fontFamily:"var(--font)",
-            fontSize:"var(--fs-16)", fontWeight:600,
-            color: active===l ? "var(--amber)" : "var(--text-2)",
-            textAlign:"left", padding:"16px 0",
-          }}>{l}</button>
         ))}
-        
-        {/*  whatsapp cta in mobile menu */}
-        {/* <a href={waMsg("Hi Phillip, I'd like to discuss a website project!")}
-          target="_blank" rel="noopener noreferrer"
-          style={{
-            marginTop:18, display:"flex", alignItems:"center",
-            justifyContent:"center", gap:8,
-            background:"var(--wa)", color:"#fff", borderRadius:14,
-            padding:"14px 20px", fontFamily:"var(--font)",
-            fontSize:"var(--fs-14)", fontWeight:700, textDecoration:"none",
-          }}>
-          <WaIcon size={17} /> WhatsApp Me
-        </a> */}
+        <a
+          href={BOOKING_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="block text-center mt-4 bg-accent text-white py-[13px] rounded-lg font-semibold no-underline focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-2"
+        >
+          Book a call
+        </a>
+        <div className="flex items-center gap-[10px] text-xs text-muted justify-center mt-4">
+          <span className="relative inline-block w-[8px] h-[8px] rounded-full bg-available">
+            <span className="absolute -inset-[4px] rounded-full border border-available animate-orbit-pulse motion-reduce:animate-none" />
+          </span>
+           {AVAILABILITY}
+        </div>
       </div>
-
-      <style>{`
-        @media(max-width:860px){
-          .desk-nav{display:none!important}
-          .ham{display:flex!important}
-          .mobile-menu{display:block!important}
-        }
-      `}</style>
-    </>
+      {open && <div onClick={() => setOpen(false)} aria-hidden="true" className="fixed inset-0 top-[68px] bg-[rgba(10,10,15,0.28)] z-[98]" />}
+    </header>
   );
 }

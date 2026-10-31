@@ -1,81 +1,79 @@
-import { useState, useEffect } from "react";
-import { NAV_LINKS } from "./data/constants";
+import { useEffect, lazy, Suspense } from "react";
+import { Routes, Route, useLocation } from "react-router-dom";
 
 import Navbar from "./components/Navbar";
-import Hero from "./components/Hero";
-import Services from "./components/Services";
-import Projects from "./components/Projects";
-import Pricing from "./components/Pricing";
-import WhyMe from "./components/WhyMe";
-import Contact from "./components/Contact";
 import Footer from "./components/Footer";
 import FloatingWhatsApp from "./components/FloatingWhatsApp";
+import CookieConsent from "./components/CookieConsent";
+
+import Home from "./pages/Home";
+import Privacy from "./pages/Privacy";
+import BlogList from "./pages/BlogList";
+import BlogPost from "./pages/BlogPost";
+
+import { initAnalyticsIfConsented } from "./utils/consent";
+
+// Code-split: firebase/auth, the markdown editor, image uploader, and every
+// admin page (~all of src/admin) only load when someone actually visits
+// /admin. Public visitors never download any of it.
+const AdminApp = lazy(() => import("./admin/AdminApp"));
+
+function AdminLoadingFallback() {
+  return (
+    <div className="min-h-screen flex items-center justify-center text-sm text-muted">
+      Loading…
+    </div>
+  );
+}
+
+function ScrollToHash() {
+  const location = useLocation();
+  useEffect(() => {
+    if (location.hash) {
+      const id = location.hash.replace("#", "");
+      // wait a tick for the target route's content to mount
+      setTimeout(() => {
+        const el = document.getElementById(id);
+        if (el) el.scrollIntoView({ behavior: "smooth" });
+      }, 60);
+    } else {
+      window.scrollTo(0, 0);
+    }
+  }, [location.pathname, location.hash]);
+  return null;
+}
 
 export default function App() {
-  const [active, setActive] = useState("About");
+  const location = useLocation();
+  const isAdmin = location.pathname.startsWith("/admin");
 
-  // Initialize Lenis smooth scroll
   useEffect(() => {
-    const Lenis = window.Lenis;
-    if (!Lenis) return;
-
-    const lenis = new Lenis({
-      duration: 1.1,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-    });
-
-    // Use plain RAF — avoids GSAP ticker time-unit mismatch bug
-    let raf;
-    const animate = (time) => {
-      lenis.raf(time);
-      raf = requestAnimationFrame(animate);
-    };
-    raf = requestAnimationFrame(animate);
-
-    // Keep ScrollTrigger in sync if GSAP is present
-    const ST = window.ScrollTrigger;
-    if (ST) lenis.on("scroll", ST.update);
-
-    return () => {
-      cancelAnimationFrame(raf);
-      lenis.destroy();
-    };
-  }, []);
-
-  // Active section tracking
-  useEffect(() => {
-    const sections = NAV_LINKS.map((n) =>
-      document.getElementById(n.toLowerCase())
-    ).filter(Boolean);
-
-    const obs = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((e) => {
-          if (e.isIntersecting) {
-            setActive(e.target.id.charAt(0).toUpperCase() + e.target.id.slice(1));
-          }
-        });
-      },
-      { threshold: 0.3 }
-    );
-
-    sections.forEach((s) => obs.observe(s));
-    return () => obs.disconnect();
-  }, []);
+    if (!isAdmin) initAnalyticsIfConsented();
+  }, [isAdmin]);
 
   return (
     <>
-      <Navbar active={active} setActive={setActive} />
+      <ScrollToHash />
+      {!isAdmin && <Navbar />}
       <main>
-        <Hero />
-        <Services />
-        <Projects />
-        <Pricing />
-        <WhyMe />
-        <Contact />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/privacy" element={<Privacy />} />
+          <Route path="/blog" element={<BlogList />} />
+          <Route path="/blog/:slug" element={<BlogPost />} />
+          <Route
+            path="/admin/*"
+            element={
+              <Suspense fallback={<AdminLoadingFallback />}>
+                <AdminApp />
+              </Suspense>
+            }
+          />
+        </Routes>
       </main>
-      <Footer />
-      <FloatingWhatsApp />
+      {!isAdmin && <Footer />}
+      {!isAdmin && <FloatingWhatsApp />}
+      {!isAdmin && <CookieConsent />}
     </>
   );
 }
