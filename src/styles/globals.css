@@ -1,27 +1,33 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
-@theme {
-  /* Colors */
-  --color-ink: #111111;
-  --color-muted: #52525b;
-  --color-line: #e4e4e4;
-  --color-line-strong: #d4d4d4;
-  --color-accent: #e07b1f;
-  --color-accent-hover: #c2650f;
-  --color-wa: #128c3e;
+ /* ============================================================
+   phillipLabs Design System — Premium / Minimal
+   ============================================================ */
 
-  /* update based on developer availability for projects */
+@theme {
+  /* Ink & neutrals */
+  --color-ink: #111111;
+  --color-muted: #52525b;          /* 7.7:1 on white */
+  --color-line: #e6e1d8;           /* ghost border: inputs & rare dividers only */
+  --color-line-strong: #d6d0c4;
+
+  /* Tonal surfaces: separate areas by background shift, not borders */
+  --color-surface: #f8f6f2;      /* warm canvas; cards are pure white on top */
+  --color-surface-low: #f0ede6;
+  --color-surface-high: #e5e1d8;
+
+  /* Accent: bright for decoration, strong for text/buttons (AA with white) */
+  --color-accent: #e07b1f;
+  --color-accent-strong: #b45a0a;  /* 4.76:1 with white */
+  --color-accent-hover: #9a4c08;
+  --color-wa: #0e7a34;             /* 5.45:1 with white */
   --color-available: #2fb350;
 
-  /* Fonts */
+  /* Type */
   --font-sans: "Manrope", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   --font-serif: Georgia, "Times New Roman", serif;
 
-  /* Fluid type scale (clamp() keeps text fluid between mobile and desktop
-     instead of jumping at breakpoints). text-xl and text-3xl added per
-     typography-spacing.md to smooth the gap between card-title and
-     section-heading sizes. */
   --text-xs: clamp(0.72rem, 0.9vw, 0.8rem);
   --text-sm: clamp(0.82rem, 1vw, 0.9rem);
   --text-base: clamp(0.95rem, 1.1vw, 1.05rem);
@@ -30,13 +36,11 @@
   --text-2xl: clamp(1.3rem, 2.2vw, 1.6rem);
   --text-3xl: clamp(1.5rem, 2.8vw, 1.9rem);
   --text-4xl: clamp(1.7rem, 3.6vw, 2.4rem);
-  --text-6xl: clamp(2.1rem, 6vw, 4rem);
+  --text-6xl: clamp(2.1rem, 5vw, 3.5rem);
 
-  /* Fluid section rhythm */
   --spacing-gutter: clamp(20px, 3.5vw, 56px);
-  --spacing-section: clamp(40px, 6vw, 80px);
+  --spacing-section: clamp(28px, 4vw, 56px);
 
-  /* Custom animation for the orbit-ring "available" dot (echoes the logo mark) */
   --animate-orbit-pulse: orbit-pulse 2.4s ease-out infinite;
 }
 
@@ -45,23 +49,49 @@
   100% { transform: scale(2.2); opacity: 0; }
 }
 
-/* The two rules below have no Tailwind utility equivalent (scrollbar styling
-   and font smoothing are non-standard/vendor properties) — everything else
-   in this project is utility classes in the component markup, no per-component CSS. */
 @layer base {
-  html {
-    scroll-behavior: smooth;
-    overflow-x: hidden;
-  }
+  html { scroll-behavior: smooth; overflow-x: hidden; }
   body {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    background: var(--color-surface);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    /* room for the mobile bottom tab bar */
+    padding-bottom: env(safe-area-inset-bottom);
   }
   ::-webkit-scrollbar { width: 8px; }
-  ::-webkit-scrollbar-track { background: #fff; }
+  ::-webkit-scrollbar-track { background: var(--color-surface-low); }
   ::-webkit-scrollbar-thumb { background: var(--color-line-strong); border-radius: 4px; }
+
+  :focus-visible { outline: 2px solid var(--color-accent-strong); outline-offset: 2px; }
 
   @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
   }
+}
+
+/* ---- Cards: white surface lifted off the warm canvas by a hairline ring + soft shadow ---- */
+@utility card {
+  background: #fff;
+  border-radius: 1rem;
+  box-shadow: 0 0 0 1px rgb(40 28 8 / 0.08), 0 1px 2px rgb(40 28 8 / 0.05), 0 12px 24px -16px rgb(40 28 8 / 0.22);
+}
+@utility card-interactive {
+  background: #fff;
+  border-radius: 1rem;
+  box-shadow: 0 0 0 1px rgb(40 28 8 / 0.08), 0 1px 2px rgb(40 28 8 / 0.05), 0 12px 24px -16px rgb(40 28 8 / 0.22);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 0 1px rgb(180 90 10 / 0.35), 0 2px 4px rgb(40 28 8 / 0.06), 0 18px 32px -16px rgb(40 28 8 / 0.3);
+  }
+}
+
+@keyframes step-in-next { from { opacity: 0; transform: translateX(28px); } to { opacity: 1; transform: none; } }
+@keyframes step-in-prev { from { opacity: 0; transform: translateX(-28px); } to { opacity: 1; transform: none; } }
+@utility animate-step-next { animation: step-in-next 0.28s ease-out; }
+@utility animate-step-prev { animation: step-in-prev 0.28s ease-out; }
+@media (prefers-reduced-motion: reduce) {
+  .animate-step-next, .animate-step-prev { animation: none; }
 }

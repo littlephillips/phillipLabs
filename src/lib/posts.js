@@ -12,7 +12,8 @@ import {
   serverTimestamp,
 } from "firebase/firestore/lite";
 import { marked } from "marked";
-import { db } from "./firebase";
+import DOMPurify from "dompurify";
+import { db, firebaseReady } from "./firebase";
 
 const POSTS = collection(db, "posts");
 
@@ -22,6 +23,7 @@ const POSTS = collection(db, "posts");
 //   published: boolean, createdAt, updatedAt }
 
 export async function listPublishedPosts() {
+  if (!firebaseReady) return [];
   const q = query(POSTS, where("published", "==", true), orderBy("date", "desc"));
   const snap = await getDocs(q);
   return snap.docs.map((d) => ({ id: d.id, ...d.data() }));
@@ -35,6 +37,7 @@ export async function listAllPosts() {
 }
 
 export async function getPostBySlug(slug) {
+  if (!firebaseReady) return null;
   const q = query(POSTS, where("slug", "==", slug), where("published", "==", true));
   const snap = await getDocs(q);
   if (snap.empty) return null;
@@ -64,7 +67,8 @@ export async function deletePost(id) {
 }
 
 export function renderMarkdown(md) {
-  return marked.parse(md || "");
+  // Sanitise: post bodies are authored in the admin, but never inject unsanitised HTML.
+  return DOMPurify.sanitize(marked.parse(md || ""), { ADD_ATTR: ["target", "rel"] });
 }
 
 export function slugify(title) {

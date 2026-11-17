@@ -9,6 +9,7 @@ import PostsList from "./pages/PostsList";
 import PostEditor from "./pages/PostEditor";
 import ProjectsList from "./pages/ProjectsList";
 import ProjectEditor from "./pages/ProjectEditor";
+import Settings from "./pages/Settings";
 
 // Everything under /admin lives inside this boundary + provider. A bad
 // Firebase config, an auth error, or a crash in any admin page is contained
@@ -32,6 +33,7 @@ export default function AdminApp() {
             <Route path="posts/:id" element={<PostEditor />} />
             <Route path="projects" element={<ProjectsList />} />
             <Route path="projects/:id" element={<ProjectEditor />} />
+            <Route path="settings" element={<Settings />} />
           </Route>
         </Routes>
       </AuthProvider>

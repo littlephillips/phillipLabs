@@ -11,18 +11,23 @@ import {
   orderBy,
   serverTimestamp,
 } from "firebase/firestore/lite";
-import { db } from "./firebase";
+import { db, firebaseReady } from "./firebase";
 
 const PROJECTS = collection(db, "projects");
 
 // Document shape (mirrors the old PROJECTS array in constants.js):
-// { tag, title, img (Cloudinary URL), url, desc, stack: string[], color,
+// { tag, title, img (Cloudinary URL), url, desc, color,
 //   variant: "" | "admin", order: number, published: boolean, createdAt, updatedAt }
 
 export async function listPublishedProjects() {
+  if (!firebaseReady) return [];
   const q = query(PROJECTS, where("published", "==", true), orderBy("order", "asc"));
   const snap = await getDocs(q);
-  return snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+  return snap.docs.map((d) => {
+    // Tech stack is never shown publicly, even if an old document still has it.
+    const { stack: _omit, ...rest } = d.data();
+    return { id: d.id, ...rest };
+  });
 }
 
 export async function listAllProjects() {

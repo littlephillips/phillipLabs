@@ -1,0 +1,12 @@
+# phillipLabs
+
+> A Nairobi studio that builds custom websites and the business systems behind them (dashboards, CRM, invoicing, bookings, loan tools) for Kenyan businesses. Fixed prices, M-Pesa and WhatsApp ready.
+
+## Pages
+- [Services](https://philliplabs.vercel.app/services): Business websites, online stores with M-Pesa, SEO and speed, dashboards and CRM, custom business systems, care plans.
+- [Work](https://philliplabs.vercel.app/work): Live projects: Qwetu Movers, Estaka Parts, AllinEvents, Logic Architect, Cash Advance, Augtech.
+- [Pricing](https://philliplabs.vercel.app/pricing): Website packages from Ksh 8,000; business systems from Ksh 50,000, scoped on a free call.
+- [Process](https://philliplabs.vercel.app/process): Five steps from free call to launch and optional care.
+- [FAQ](https://philliplabs.vercel.app/faq): Timelines, payment, ownership, what to prepare.
+- [Contact](https://philliplabs.vercel.app/contact): Send a brief on WhatsApp or book a free 20-minute call.
+- [Blog](https://philliplabs.vercel.app/blog): Guides and case studies.

@@ -8,6 +8,8 @@ import { fileURLToPath } from "node:url";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(__dirname, "..");
 
+const DEFAULTS = JSON.parse(fs.readFileSync(path.join(root, "site.defaults.json"), "utf8"));
+
 function readEnvVar(name, fallback) {
   const envPath = path.join(root, ".env");
   if (fs.existsSync(envPath)) {
@@ -19,9 +21,10 @@ function readEnvVar(name, fallback) {
   return process.env[name] || fallback;
 }
 
-const SITE = readEnvVar("VITE_SITE_URL", "https://philliplabs.vercel.app").replace(/\/$/, "");
+const SITE = readEnvVar("VITE_SITE_URL", DEFAULTS.siteUrl).replace(/\/$/, "");
 
 async function getFirestoreSlugs() {
+  if (!readEnvVar("VITE_FIREBASE_PROJECT_ID")) return null; // not configured: use legacy markdown slugs
   try {
     const { initializeApp } = await import("firebase/app");
     const { getFirestore, collection, getDocs, query, where } = await import(
@@ -58,7 +61,7 @@ function getLegacyMarkdownSlugs() {
     .filter(Boolean);
 }
 
-const staticUrls = ["/", "/blog", "/privacy"];
+const staticUrls = ["/", "/services", "/work", "/process", "/pricing", "/faq", "/contact", "/blog"]; // /privacy is noindex, so excluded
 const firestoreSlugs = await getFirestoreSlugs();
 const blogSlugs = firestoreSlugs !== null ? firestoreSlugs : getLegacyMarkdownSlugs();
 const blogUrls = blogSlugs.map((slug) => `/blog/${slug}`);

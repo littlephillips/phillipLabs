@@ -1,6 +1,5 @@
 import { initializeApp, getApps } from "firebase/app";
-import { getAuth } from "firebase/auth";
-import { getFirestore } from "firebase/firestore/lite";
+import { getFirestore, setLogLevel } from "firebase/firestore/lite";
 
 // Using the "lite" Firestore build: the whole app only does one-shot reads
 // and writes (getDocs/addDoc/updateDoc/deleteDoc) — nothing subscribes to
@@ -24,6 +23,13 @@ const firebaseConfig = {
 
 const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
 
-export const auth = getAuth(app);
 export const db = getFirestore(app);
 export default app;
+
+// Quiet the SDK in production: a failed read already degrades to local
+// content, and raw RPC errors in the console look alarming to visitors.
+if (import.meta.env.PROD) setLogLevel("silent");
+
+// False when no .env is configured (local dev, preview deploys). Reads are
+// skipped so the public site renders from its built-in content.
+export const firebaseReady = Boolean(firebaseConfig.projectId && firebaseConfig.apiKey);

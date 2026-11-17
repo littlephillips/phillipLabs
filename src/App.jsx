@@ -7,73 +7,75 @@ import FloatingWhatsApp from "./components/FloatingWhatsApp";
 import CookieConsent from "./components/CookieConsent";
 
 import Home from "./pages/Home";
+import ServicesPage from "./pages/ServicesPage";
+import WorkPage from "./pages/WorkPage";
+import ProcessPage from "./pages/ProcessPage";
+import PricingPage from "./pages/PricingPage";
+import FaqPage from "./pages/FaqPage";
+import ContactPage from "./pages/ContactPage";
 import Privacy from "./pages/Privacy";
 import BlogList from "./pages/BlogList";
 import BlogPost from "./pages/BlogPost";
+import NotFound from "./pages/NotFound";
 
 import { initAnalyticsIfConsented } from "./utils/consent";
 
-// Code-split: firebase/auth, the markdown editor, image uploader, and every
-// admin page (~all of src/admin) only load when someone actually visits
-// /admin. Public visitors never download any of it.
+// Code-split: firebase/auth, the markdown editor and every admin page only
+// load when someone visits /admin. Public visitors never download them.
 const AdminApp = lazy(() => import("./admin/AdminApp"));
 
-function AdminLoadingFallback() {
-  return (
-    <div className="min-h-screen flex items-center justify-center text-sm text-muted">
-      Loading…
-    </div>
-  );
-}
-
-function ScrollToHash() {
-  const location = useLocation();
+function ScrollManager() {
+  const { pathname, hash } = useLocation();
   useEffect(() => {
-    if (location.hash) {
-      const id = location.hash.replace("#", "");
-      // wait a tick for the target route's content to mount
-      setTimeout(() => {
-        const el = document.getElementById(id);
-        if (el) el.scrollIntoView({ behavior: "smooth" });
-      }, 60);
-    } else {
-      window.scrollTo(0, 0);
+    if (hash) {
+      const id = hash.slice(1);
+      const t = setTimeout(() => document.getElementById(id)?.scrollIntoView({ behavior: "smooth" }), 60);
+      return () => clearTimeout(t);
     }
-  }, [location.pathname, location.hash]);
+    // Query-only changes (service modal) must not jump to the top.
+    window.scrollTo(0, 0);
+  }, [pathname, hash]);
   return null;
 }
 
 export default function App() {
-  const location = useLocation();
-  const isAdmin = location.pathname.startsWith("/admin");
+  const { pathname } = useLocation();
+  const isAdmin = pathname.startsWith("/admin");
 
   useEffect(() => {
     if (!isAdmin) initAnalyticsIfConsented();
   }, [isAdmin]);
 
   return (
-    <>
-      <ScrollToHash />
+    <div className="min-h-svh flex flex-col">
+      <ScrollManager />
       {!isAdmin && <Navbar />}
-      <main>
+      <main className="flex-1">
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/services" element={<ServicesPage />} />
+          <Route path="/work" element={<WorkPage />} />
+          <Route path="/process" element={<ProcessPage />} />
+          <Route path="/pricing" element={<PricingPage />} />
+          <Route path="/faq" element={<FaqPage />} />
+          <Route path="/contact" element={<ContactPage />} />
           <Route path="/privacy" element={<Privacy />} />
           <Route path="/blog" element={<BlogList />} />
           <Route path="/blog/:slug" element={<BlogPost />} />
           <Route
             path="/admin/*"
             element={
-              <Suspense fallback={<AdminLoadingFallback />}>
+              <Suspense fallback={<div className="min-h-screen flex items-center justify-center text-sm text-muted">Loading…</div>}>
                 <AdminApp />
               </Suspense>
             }
           />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
       {!isAdmin && <Footer />}
       {!isAdmin && <FloatingWhatsApp />}
       {!isAdmin && <CookieConsent />}
-    </>
+    </div>
   );
 }

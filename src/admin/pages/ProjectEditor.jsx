@@ -13,8 +13,8 @@ const EMPTY = {
   img: "",
   url: "",
   desc: "",
-  stack: "",
   color: "#e07b1f",
+  kind: "website",
   variant: "",
   order: 0,
   published: true,
@@ -33,7 +33,8 @@ export default function ProjectEditor() {
     if (isNew) return;
     getProjectById(id).then((project) => {
       if (project) {
-        setForm({ ...project, stack: (project.stack || []).join(", ") });
+        const { stack: _omit, ...rest } = project; // stack is no longer used
+        setForm(rest);
       }
       setLoading(false);
     });
@@ -48,10 +49,6 @@ export default function ProjectEditor() {
     const data = {
       ...form,
       order: Number(form.order) || 0,
-      stack: form.stack
-        .split(",")
-        .map((s) => s.trim())
-        .filter(Boolean),
     };
     try {
       if (isNew) {
@@ -118,17 +115,6 @@ export default function ProjectEditor() {
         />
       </Field>
 
-      <div className="mt-4">
-        <Field label="Tech stack (comma-separated)">
-          <input
-            value={form.stack}
-            onChange={(e) => set("stack", e.target.value)}
-            placeholder="React, Tailwind, Node.js, Firebase"
-            className="w-full px-3 py-2.5 border border-line-strong rounded-lg text-sm"
-          />
-        </Field>
-      </div>
-
       <div className="grid grid-cols-2 gap-4 mt-4">
         <Field label="Display order">
           <input
@@ -138,14 +124,17 @@ export default function ProjectEditor() {
             className="w-full px-3 py-2.5 border border-line-strong rounded-lg text-sm"
           />
         </Field>
-        <Field label="Type">
+        <Field label="Type (drives the Work filter)">
           <select
-            value={form.variant}
-            onChange={(e) => set("variant", e.target.value)}
+            value={form.kind || (form.variant === "admin" ? "system" : "website")}
+            onChange={(e) => {
+              set("kind", e.target.value);
+              set("variant", e.target.value === "system" ? "admin" : "");
+            }}
             className="w-full px-3 py-2.5 border border-line-strong rounded-lg text-sm"
           >
-            <option value="">Customer-facing site</option>
-            <option value="admin">Admin dashboard</option>
+            <option value="website">Website (customer-facing)</option>
+            <option value="system">System / dashboard</option>
           </select>
         </Field>
       </div>

@@ -1,6 +1,6 @@
 {
-  "name": "phillip-kinuthia-dev",
-  "version": "1.0.0",
+  "name": "philliplabs-site",
+  "version": "2.2.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "dompurify": "^3.4.17",
     "firebase": "^12.17.1",
     "lucide-react": "^0.446.0",
     "marked": "^13.0.3",

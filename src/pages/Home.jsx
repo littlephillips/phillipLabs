@@ -1,42 +1,33 @@
-import { Helmet } from "react-helmet-async";
-import { siteUrl } from "../config/site";
+import Seo from "../components/Seo";
 import Hero from "../components/Hero";
 import ProofStrip from "../components/ProofStrip";
 import Services from "../components/Services";
 import Work from "../components/Work";
 import Process from "../components/Process";
-import Pricing from "../components/Pricing";
+import PricingTeaser from "../components/PricingTeaser";
 import WhyMe from "../components/WhyMe";
 import FAQ from "../components/FAQ";
-import Contact from "../components/Contact";
+import HomeCta from "../components/HomeCta";
 
+// Home = the whole story in one scroll. Each section is also its own route
+// (/services, /work, ...) for direct links and search.
 export default function Home() {
   return (
     <>
-      <Helmet>
-        <title>phillipLabs | Websites & Business Systems That Actually Sell — Kenya</title>
-        <meta
-          name="description"
-          content="phillipLabs builds websites and business systems (CRM, bookings, orders) for Kenyan SMBs — one place to get found by customers and run the business."
-        />
-        <link rel="canonical" href={siteUrl("/")} />
-        <meta property="og:title" content="phillipLabs | Websites & Business Systems That Actually Sell — Kenya" />
-        <meta
-          property="og:description"
-          content="phillipLabs builds websites and business systems (CRM, bookings, orders) for Kenyan SMBs — one place to get found by customers and run the business."
-        />
-        <meta property="og:url" content={siteUrl("/")} />
-        <meta property="og:type" content="website" />
-      </Helmet>
+      <Seo
+        title="phillipLabs | Websites & Business Systems in Kenya"
+        description="Custom websites and the business systems behind them (dashboards, invoicing, bookings) for Kenyan businesses. Fixed prices, M-Pesa ready."
+        path="/"
+      />
       <Hero />
       <ProofStrip />
-      <Services />
-      <Work />
-      <Process />
-      <Pricing />
+      <Services compact />
+      <Work limit={3} />
+      <Process compact />
+      <PricingTeaser />
       <WhyMe />
-      <FAQ />
-      <Contact />
+      <FAQ limit={3} />
+      <HomeCta />
     </>
   );
 }

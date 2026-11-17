@@ -1,67 +1,51 @@
-# Phillip Kinuthia — Freelance Web Developer Portfolio
+# phillipLabs — Website
 
-A fully custom React + Vite portfolio & business website for Phillip Kinuthia, Nairobi-based freelance web developer.
+**v2.2** · Websites first, business systems second, care plans after. Nairobi, Kenya.
+Live: https://philliplabs.vercel.app/
 
-## 🚀 Quick Start
+React 18 + Vite 5 + Tailwind v4 · Firebase (Auth + Firestore lite) for the admin and content · Cloudinary for images · Vercel for hosting · build-time prerender for SEO.
+
+## Quick start
 
 ```bash
-# 1. Install dependencies
 npm install
-
-# 2. Start dev server
-npm run dev
-
-# 3. Build for production
-npm run build
-
-# 4. Preview production build
+cp .env.example .env     # fill in only what you need; the site runs without Firebase
+npm run dev              # http://localhost:5173
+npm run build            # sitemap + vite build + prerender
 npm run preview
 ```
 
-## 📁 Project Structure
+Without Firebase keys the site renders its built-in content and the admin is disabled.
+
+## Configuration
+
+| Where | What |
+|---|---|
+| `site.defaults.json` | Brand, site URL, email, phone, location (used by the build and as fallbacks) |
+| `.env` (`VITE_*`) | Firebase web config, Cloudinary cloud name + preset, optional `VITE_BOOKING_URL`. No secrets here. |
+| Admin → Settings | Phone, email, deposit %, stats, scheduler link (stored in Firestore `settings/site`) |
+| `src/data/constants.js` | Services, packages, systems pricing, FAQ, built-in projects |
+| `firestore.rules` | Deploy to Firebase; admins are listed in `admins/{uid}` |
+
+## Structure
 
 ```
-phillip-kinuthia/
-├── index.html              # Entry HTML (SEO meta tags, structured data, fonts)
-├── vite.config.js          # Vite config
-├── package.json
-└── src/
-    ├── main.jsx            # React root
-    ├── App.jsx             # Root component — composes all sections
-    ├── data/
-    │   └── constants.js    # All data: services, projects, packages, socials
-    ├── hooks/
-    │   ├── useInView.js    # IntersectionObserver hook for scroll animations
-    │   └── useTypewriter.js # Typewriter effect hook
-    └── components/
-        ├── Navbar.jsx          # Fixed nav with mobile hamburger menu
-        ├── Hero.jsx            # Landing section with typewriter + stats
-        ├── Services.jsx        # 6-card services grid
-        ├── Projects.jsx        # Portfolio with filter tabs
-        ├── Pricing.jsx         # 4-tier pricing cards + addon subscriptions
-        ├── WhyMe.jsx           # 5 selling point cards
-        ├── Contact.jsx         # Contact info + WhatsApp order form
-        ├── OrderForm.jsx       # Form that sends pre-filled WhatsApp message
-        ├── Footer.jsx          # Full footer with nav + contact links
-        ├── FloatingWhatsApp.jsx # Fixed floating WhatsApp CTA button
-        └── CheckIcon.jsx       # Reusable check icon for feature lists
+src/
+  components/   UI sections (Hero, Services, Work, Pricing, BriefForm, ...)
+  pages/        Route pages (thin wrappers) + blog + privacy
+  admin/        Lazy-loaded admin (projects, posts, settings)
+  lib/          firebase, settings, projects, posts
+  data/         constants.js (all site copy and pricing)
+  config/       site.js (brand/contact constants)
+scripts/        generate-sitemap.js, prerender.mjs
+public/         robots.txt, llms.txt, assets
+systemDocs/     All documentation (start at systemDocs/README.md)
 ```
 
-## ✏️ Customising
+## Docs
 
-All content lives in **`src/data/constants.js`** — edit there to update:
-- Your phone number, email
-- Services, projects, packages, pricing
-- Social media links
-- Stats on the hero section
+Start at [`systemDocs/README.md`](systemDocs/README.md): positioning, PRD, SRS, architecture, design system, UX, user journey, SEO, security, launch checklist, custom-domain guide, bugs and features.
 
-## 🔍 SEO
+## Before going live
 
-- Meta title, description, keywords set in `index.html`
-- Open Graph & Twitter Card tags included
-- JSON-LD structured data (Person schema) included
-- Canonical URL set — update to your actual domain
-
-## 📞 Contact
-- WhatsApp: +254 797 321 068
-- Email: phillipkinuthia72@gmail.com
+Follow `systemDocs/LAUNCH_CHECKLIST.md` (Firebase rules + indexes + admin doc, disable sign-up, Cloudinary preset, env vars on Vercel, domain, re-run Lighthouse on production).

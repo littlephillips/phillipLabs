@@ -2,22 +2,37 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // Public can read published content only. Any authenticated user (i.e.
-    // the single admin account) can read/write everything, including drafts.
-    // If a second admin is ever added, tighten `request.auth != null` to a
-    // check against an `admins/{uid}` allow-list document instead.
+    // Admin = a signed-in user who has a document at admins/{their uid}.
+    // Create that document by hand in the Firebase console for each admin.
+    // Disable public sign-ups in Firebase Auth so only invited users exist.
+    function isAdmin() {
+      return request.auth != null
+        && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
 
+    // Public may read published content only. Admins read/write everything.
     match /posts/{postId} {
-      allow read: if resource.data.published == true || request.auth != null;
-      allow write: if request.auth != null;
+      allow read: if resource.data.published == true || isAdmin();
+      allow write: if isAdmin();
     }
 
     match /projects/{projectId} {
-      allow read: if resource.data.published == true || request.auth != null;
-      allow write: if request.auth != null;
+      allow read: if resource.data.published == true || isAdmin();
+      allow write: if isAdmin();
     }
 
-    // Deny everything else by default.
+    // Public site settings (phone, email, availability, stats, deposit %).
+    match /settings/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // A user may check only their own admin record; nobody writes from the client.
+    match /admins/{uid} {
+      allow read: if request.auth != null && request.auth.uid == uid;
+      allow write: if false;
+    }
+
     match /{document=**} {
       allow read, write: if false;
     }

@@ -1,3 +1,19 @@
+// Runs after `vite build`. Serves the built dist/ folder locally, visits
+// every public route in a headless browser with the React app's scroll-
+// reveal animations disabled (see src/hooks/useInView.js — window.__PRERENDER__),
+// and overwrites each route's index.html with the fully-rendered DOM.
+//
+// This is prerendering, not true SSR: the site is still a client-rendered
+// SPA at runtime (hydration takes over immediately), but crawlers and
+// no-JS tools now see real content in the initial HTML response instead of
+// an empty <div id="root"></div> shell.
+//
+// Requires Chrome — `npm install` downloads it automatically via the
+// puppeteer devDependency. If that download fails (offline, restricted
+// network, air-gapped CI), this script logs a warning and exits 0 rather
+// than failing the whole build — a missing prerender step degrades SEO,
+// it shouldn't block shipping.
+
 import fs from "node:fs";
 import path from "node:path";
 import http from "node:http";
@@ -7,6 +23,8 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(__dirname, "..");
 const distDir = path.join(root, "dist");
 const PORT = 4173;
+
+const DEFAULTS = JSON.parse(fs.readFileSync(path.join(root, "site.defaults.json"), "utf8"));
 
 function readEnvVar(name, fallback) {
   // .env isn't loaded automatically in a plain Node script — read it
@@ -22,14 +40,15 @@ function readEnvVar(name, fallback) {
   return process.env[name] || fallback;
 }
 
-const SITE_URL = readEnvVar("VITE_SITE_URL", "https://philliplabs.vercel.app").replace(/\/$/, "");
+const SITE_URL = readEnvVar("VITE_SITE_URL", DEFAULTS.siteUrl).replace(/\/$/, "");
 
 // Static routes always prerendered. Blog post routes are appended below
 // once fetched from Firestore, so new posts get prerendered automatically
 // on the next build — no code change needed.
-const STATIC_ROUTES = ["/", "/privacy", "/blog"];
+const STATIC_ROUTES = ["/", "/services", "/work", "/process", "/pricing", "/faq", "/contact", "/blog", "/privacy"];
 
 async function getBlogSlugs() {
+  if (!readEnvVar("VITE_FIREBASE_PROJECT_ID")) return []; // Firebase not configured
   try {
     const { initializeApp } = await import("firebase/app");
     const { getFirestore, collection, getDocs, query, where } = await import(

@@ -1,112 +1,144 @@
-import { Check, Wallet, Clock, ShieldCheck } from "lucide-react";
-import { getIcon } from "../utils/icons";
-import { PACKAGES, ADDONS, PRICING_TERMS, waMsg } from "../data/constants";
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import { Check, Wallet, Clock, ShieldCheck, Globe, LayoutDashboard, ArrowRight, Sparkles, HeartHandshake } from "lucide-react";
+import { PACKAGES, SYSTEMS_PRICING, ADDONS, pricingTerms } from "../data/constants";
+import { useSettings } from "../lib/settings";
+import { sectionPad } from "../utils/layout";
 import Reveal from "./Reveal";
+import SectionHead from "./SectionHead";
+import Segmented from "./Segmented";
+import SnapCarousel from "./SnapCarousel";
 import Wrap from "./Wrap";
 
-export default function Pricing() {
+function TierCard({ p, popular }) {
   return (
-    <section id="pricing" className="py-section bg-[#fafafa]">
-      <Wrap>
-        <Reveal as="h2" className="text-4xl font-semibold tracking-[-0.02em] mb-2.5">
-          Packages & pricing
-        </Reveal>
-        <Reveal as="p" delay={40} className="text-muted max-w-[720px] mb-5">
-          Start where your business is today. Every package can grow into the next, fixed price, agreed upfront.
-        </Reveal>
-
-        <Reveal as="div" delay={70} className="flex flex-wrap gap-x-[22px] gap-y-2.5 mb-8">
-          <span className="inline-flex items-center gap-[7px] text-[0.85rem] text-muted">
-            <Wallet size={15} strokeWidth={2} className="text-accent shrink-0" /> {PRICING_TERMS.deposit}
-          </span>
-          <span className="inline-flex items-center gap-[7px] text-[0.85rem] text-muted">
-            <Clock size={15} strokeWidth={2} className="text-accent shrink-0" /> {PRICING_TERMS.timeline}
-          </span>
-          <span className="inline-flex items-center gap-[7px] text-[0.85rem] text-muted">
-            <ShieldCheck size={15} strokeWidth={2} className="text-accent shrink-0" /> {PRICING_TERMS.urgency}
-          </span>
-        </Reveal>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-          {PACKAGES.map((p, i) => {
-            const Icon = getIcon(p.icon);
-            return (
-              <Reveal
-                as="div"
-                delay={i * 50}
-                key={p.tier}
-                className={`relative bg-white rounded-2xl px-5 pt-6 pb-[22px] flex flex-col transition-[transform,box-shadow] hover:-translate-y-[5px] ${
-                  p.featured
-                    ? "border border-accent shadow-[0_14px_32px_-16px_rgba(224,123,31,0.32)] hover:shadow-[0_20px_36px_-18px_rgba(16,16,20,0.2)]"
-                    : "border border-line shadow-[0_1px_3px_rgba(16,16,20,0.04)] hover:shadow-[0_20px_36px_-18px_rgba(16,16,20,0.2)]"
-                }`}
-                style={{ borderTop: `3px solid ${p.color}` }}
-              >
-                {p.featured && (
-                  <span className="absolute -top-3 left-5 bg-accent text-white text-xs font-bold px-3 py-1 rounded-full">
-                    Most popular
-                  </span>
-                )}
-
-                <div
-                  className="w-9 h-9 rounded-[9px] flex items-center justify-center mb-3.5"
-                  style={{ background: `${p.color}16`, color: p.color }}
-                >
-                  <Icon size={19} strokeWidth={1.75} />
-                </div>
-                <div className="text-sm font-bold uppercase tracking-[0.03em]">{p.tier}</div>
-                <div className="text-xs text-muted mb-3.5">{p.label}</div>
-
-                <div className="text-2xl font-bold mb-[3px]">
-                  <span className="text-sm font-semibold text-muted">Ksh</span> {p.price}
-                </div>
-                <div className="text-xs text-muted mb-[18px]">
-                  {p.pages} · {p.revisions}
-                </div>
-
-                <ul className="flex flex-col gap-[9px] mb-[18px] flex-1">
-                  {p.features.map((f) => (
-                    <li key={f} className="text-sm flex gap-[9px] items-start">
-                      <Check size={14} strokeWidth={2.5} className="shrink-0 mt-[3px]" style={{ color: p.color }} />
-                      <span>{f}</span>
-                    </li>
-                  ))}
-                </ul>
-
-                <p className="text-xs text-muted mb-4 leading-[1.5]">
-                  <strong className="text-ink font-semibold">Best for:</strong> {p.best}
-                </p>
-
-                <a
-                  href={waMsg(`Hi phillipLabs, I'm interested in the ${p.tier} package (${p.label}). Can we talk?`)}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={`text-center py-3 rounded-lg font-semibold text-sm no-underline transition-[filter] hover:brightness-105 ${
-                    p.featured
-                      ? "bg-accent text-white shadow-[0_10px_24px_rgba(224,123,31,0.32)]"
-                      : "bg-transparent text-ink border border-line-strong"
-                  }`}
-                >
-                  Get started
-                </a>
-              </Reveal>
-            );
-          })}
+    <div className={`relative h-full flex flex-col p-4 sm:p-5 ${popular ? "card ring-2 ring-accent-strong shadow-[0_18px_40px_-18px_rgba(180,90,10,0.5)]" : "card"}`}>
+      <div className="flex items-start justify-between gap-2 mb-2">
+        <div>
+          <h3 className="text-sm font-extrabold uppercase tracking-[0.06em] leading-none">{p.tier}</h3>
+          <div className="text-xs text-muted mt-1">{p.label}</div>
         </div>
+        {popular && (
+          <span className="inline-flex items-center gap-1 bg-accent-strong text-white text-[11px] font-bold uppercase tracking-[0.05em] px-2.5 py-1 rounded-md">
+            <Sparkles size={11} aria-hidden="true" /> Most popular
+          </span>
+        )}
+      </div>
+      <div className="text-3xl font-extrabold leading-none"><span className="text-sm font-semibold text-muted">Ksh</span> {p.price}</div>
+      <div className="text-xs text-muted mt-1 mb-3 pb-3 border-b border-line">{p.pages} · {p.revisions}</div>
+      <ul className="flex flex-col gap-1.5 mb-3 flex-1 list-none p-0">
+        {p.features.map((f) => (
+          <li key={f} className="text-[13px] sm:text-sm flex gap-2 items-start leading-snug">
+            <Check size={14} strokeWidth={2.75} className="shrink-0 mt-[3px] text-accent-strong" aria-hidden="true" />
+            <span>{f}</span>
+          </li>
+        ))}
+      </ul>
+      <p className="hidden sm:block text-xs text-muted mb-3 leading-[1.45]"><strong className="text-ink font-semibold">Best for:</strong> {p.best}</p>
+      <Link
+        to={`/contact?need=website&package=${p.tier}`}
+        className={`group inline-flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-sm no-underline transition-[background-color,transform,box-shadow] hover:-translate-y-px ${
+          popular
+            ? "bg-accent-strong text-white shadow-[0_10px_22px_-8px_rgba(180,90,10,0.7)] hover:bg-accent-hover"
+            : "bg-ink text-white shadow-[0_10px_22px_-10px_rgba(17,17,17,0.7)] hover:bg-[#2c2c2c]"
+        }`}
+      >
+        Choose {p.tier} <ArrowRight size={16} className="transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
+      </Link>
+    </div>
+  );
+}
 
-        <Reveal as="div" delay={220} className="mt-12">
-          <h3 className="text-lg font-semibold mb-3.5">Ongoing support add-ons</h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
-            {ADDONS.map((a) => (
-              <div key={a.name} className="border border-line rounded-[10px] p-3.5 bg-white">
-                <div className="font-semibold text-sm">{a.name}</div>
-                <div className="text-accent text-sm font-semibold my-1">{a.price}</div>
-                <div className="text-muted text-xs">{a.desc}</div>
-              </div>
-            ))}
+function SystemsCard() {
+  const s = SYSTEMS_PRICING;
+  return (
+    <div className="bg-ink text-white rounded-2xl p-5 sm:p-7 grid lg:grid-cols-[1.1fr_1fr_1fr] gap-5 lg:gap-8 shadow-[0_18px_40px_-20px_rgba(17,17,17,0.6)]">
+      <div className="flex flex-col">
+        <div className="text-xs font-bold uppercase tracking-[0.06em] text-accent mb-1.5">Business systems</div>
+        <div className="text-4xl font-extrabold mb-2 leading-none"><span className="text-base font-semibold text-white/60">From Ksh</span> {s.price}</div>
+        <p className="text-white/70 text-sm leading-[1.55] mb-4 max-w-[420px]">{s.intro}</p>
+        <Link to="/contact?need=system" className="group mt-auto inline-flex items-center justify-center gap-2 w-fit bg-white text-ink px-5 py-3 rounded-xl font-bold text-sm no-underline shadow-[0_10px_22px_-8px_rgba(255,255,255,0.3)] hover:bg-surface-high">
+          Book a free scoping call <ArrowRight size={16} className="transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
+        </Link>
+      </div>
+      <div>
+        <div className="text-sm font-semibold mb-2">What you get</div>
+        <ul className="flex flex-col gap-1.5 list-none p-0">
+          {s.includes.map((i) => (
+            <li key={i} className="flex gap-2 text-[13px] sm:text-sm text-white/80 leading-snug"><Check size={14} strokeWidth={2.75} className="text-accent shrink-0 mt-[3px]" aria-hidden="true" />{i}</li>
+          ))}
+        </ul>
+      </div>
+      <div>
+        <div className="text-sm font-semibold mb-2">What decides the price</div>
+        <ul className="flex flex-col gap-1.5 list-none p-0">
+          {s.drivers.map((i) => (
+            <li key={i} className="text-[13px] sm:text-sm text-white/70 pl-4 relative leading-snug before:content-[''] before:absolute before:left-0 before:top-[8px] before:w-1.5 before:h-1.5 before:rounded-full before:bg-white/30">{i}</li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  );
+}
+
+// Care plans sit right under the packages, in the same view, as a compact band.
+function CareBand({ currency }) {
+  return (
+    <div className="card mt-4 p-3 sm:p-4">
+      <div className="flex items-center justify-between gap-3 mb-2.5">
+        <h3 className="inline-flex items-center gap-2 text-sm font-bold"><HeartHandshake size={16} className="text-accent-strong" aria-hidden="true" /> Care plans <span className="font-medium text-muted">(optional, monthly)</span></h3>
+        <span className="hidden md:inline text-xs text-muted">{currency}</span>
+      </div>
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2">
+        {ADDONS.map((a) => (
+          <div key={a.name} className="rounded-xl bg-surface px-3 py-2.5">
+            <div className="font-semibold text-[13px] leading-tight">{a.name}</div>
+            <div className="text-accent-strong text-sm font-bold">{a.price}</div>
+            <div className="hidden sm:block text-muted text-xs leading-snug mt-0.5">{a.desc}</div>
           </div>
-          <p className="text-xs text-muted mt-3.5">{PRICING_TERMS.currency}</p>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+const TABS = [
+  { id: "websites", label: "Websites", icon: Globe },
+  { id: "systems", label: "Business systems", icon: LayoutDashboard },
+];
+
+export default function Pricing({ standalone = false }) {
+  const { depositPercent, popularTier } = useSettings();
+  const terms = pricingTerms(depositPercent);
+  const [tab, setTab] = useState("websites");
+
+  return (
+    <section id="pricing" className={sectionPad(standalone)}>
+      <Wrap>
+        <SectionHead standalone={standalone} title="Packages & pricing" sub="Websites have fixed packages. Systems are scoped on a call, then priced in writing." className="mb-3" />
+
+        <Reveal as="ul" delay={70} className="flex flex-wrap gap-x-5 gap-y-1 mb-4 list-none p-0">
+          {[[Wallet, terms.deposit], [Clock, terms.timeline], [ShieldCheck, terms.urgency]].map(([Icon, text], i) => (
+            <li key={text} className={`items-center gap-2 text-[13px] text-muted ${i === 2 ? "hidden lg:inline-flex" : "inline-flex"}`}><Icon size={14} strokeWidth={2} className="text-accent-strong shrink-0" aria-hidden="true" />{text}</li>
+          ))}
         </Reveal>
+
+        <Segmented options={TABS} value={tab} onChange={setTab} label="Pricing type" className="mb-4 w-full sm:w-[380px]" />
+
+        {tab === "websites" ? (
+          <>
+            <SnapCarousel className="md:hidden" label="Website packages" slideClass="w-[86%]" startAt={Math.max(0, PACKAGES.findIndex((p) => p.tier === popularTier))}>
+              {PACKAGES.map((p) => <TierCard key={p.tier} p={p} popular={p.tier === popularTier} />)}
+            </SnapCarousel>
+            <div className="hidden md:grid grid-cols-3 gap-4 lg:gap-5 items-stretch">
+              {PACKAGES.map((p, i) => <Reveal as="div" delay={i * 50} key={p.tier}><TierCard p={p} popular={p.tier === popularTier} /></Reveal>)}
+            </div>
+          </>
+        ) : (
+          <SystemsCard />
+        )}
+
+        <CareBand currency={terms.currency} />
       </Wrap>
     </section>
   );

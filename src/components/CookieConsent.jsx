@@ -17,7 +17,7 @@ export default function CookieConsent() {
   if (!visible) return null;
 
   return (
-    <div className="fixed left-4 right-4 bottom-4 z-[1000] max-w-[520px] mx-auto bg-ink text-white rounded-xl px-5 py-[18px] shadow-[0_12px_40px_rgba(0,0,0,0.3)]">
+    <div className="fixed left-4 right-4 bottom-[76px] lg:bottom-4 z-[1000] max-w-[520px] mx-auto bg-ink text-white rounded-xl px-5 py-[18px] shadow-[0_12px_40px_rgba(0,0,0,0.3)]">
       <p className="text-sm mb-3.5 leading-[1.5]">
         This site uses cookies for basic analytics to understand how visitors use it. See the{" "}
         <Link to="/privacy" className="text-white underline">

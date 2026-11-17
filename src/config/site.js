@@ -1,14 +1,21 @@
-// Single source of truth for values that change when the site moves off the
-// Vercel subdomain onto a real domain, or the contact email changes.
-// Update .env (VITE_SITE_URL / VITE_CONTACT_EMAIL) — never hardcode these
-// elsewhere in the app again.
+// Single source of truth for values that change when the site moves to a
+// custom domain or contact details change. Defaults live in
+// /site.defaults.json (shared with vite.config.js and the build scripts);
+// override per environment with VITE_* variables. Contact details can also
+// be changed at runtime from Admin → Settings (see lib/settings.jsx).
+import defaults from "../../site.defaults.json";
 
-export const SITE_URL = (
-  import.meta.env.VITE_SITE_URL || "https://philliplabs.vercel.app"
-).replace(/\/$/, "");
+const env = import.meta.env;
 
-export const CONTACT_EMAIL =
-  import.meta.env.VITE_CONTACT_EMAIL || "philliplabs72@gmail.com";
+export const BRAND = defaults.brand;
+export const SITE_URL = (env.VITE_SITE_URL || defaults.siteUrl).replace(/\/$/, "");
+export const CONTACT_EMAIL = env.VITE_CONTACT_EMAIL || defaults.email;
+export const CONTACT_PHONE = env.VITE_CONTACT_PHONE || defaults.phone;
+export const LOCATION = defaults.location;
+
+// Optional scheduler link (Cal.com / Calendly / Google Calendar appointment
+// page). When empty, "Book a call" falls back to a pre-filled WhatsApp message.
+export const BOOKING_URL = env.VITE_BOOKING_URL || "";
 
 export function siteUrl(path = "/") {
   return `${SITE_URL}${path.startsWith("/") ? path : `/${path}`}`;

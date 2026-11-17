@@ -1,5 +1,5 @@
 const KEY = "pl_cookie_consent"; // "accepted" | "declined"
-const CLARITY_ID = "w0xfvtimb6";
+const CLARITY_ID = import.meta.env.VITE_CLARITY_ID || "w0xfvtimb6";
 
 export function getConsent() {
   try {
