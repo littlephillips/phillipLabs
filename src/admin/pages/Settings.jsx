@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { getSettings, saveSettings } from "../../lib/settings";
 import { DEFAULT_SETTINGS, PACKAGES } from "../../data/constants";
 
-const inputCls = "w-full px-3 py-2.5 border border-line-strong rounded-lg text-sm";
+const inputCls = "w-full px-3 py-2.5 border border-line-strong rounded-lg text-base sm:text-sm bg-white";
 
 function Field({ label, hint, children }) {
   return (
@@ -58,7 +58,7 @@ export default function Settings() {
 
   return (
     <div>
-      <h1 className="text-2xl font-semibold tracking-[-0.02em] mb-6">Site settings</h1>
+      <h1 className="text-xl sm:text-2xl font-semibold tracking-[-0.02em] mb-5 sm:mb-6">Site settings</h1>
       <div className="grid sm:grid-cols-2 gap-4 mb-4">
         <Field label="WhatsApp / phone" hint="Digits only with country code, e.g. 254710715653"><input className={inputCls} value={form.phone} onChange={(e) => set("phone", e.target.value)} /></Field>
         <Field label="Email"><input className={inputCls} value={form.email} onChange={(e) => set("email", e.target.value)} /></Field>
@@ -78,14 +78,14 @@ export default function Settings() {
       <h2 className="text-sm font-semibold mt-6 mb-2">Headline numbers (only real, provable ones)</h2>
       <div className="grid gap-2 mb-6">
         {form.stats.map(([n, l], i) => (
-          <div key={i} className="grid grid-cols-[120px_1fr] gap-2">
+          <div key={i} className="grid grid-cols-[88px_1fr] sm:grid-cols-[120px_1fr] gap-2">
             <input className={inputCls} value={n} onChange={(e) => setStat(i, 0, e.target.value)} aria-label={`Stat ${i + 1} value`} />
             <input className={inputCls} value={l} onChange={(e) => setStat(i, 1, e.target.value)} aria-label={`Stat ${i + 1} label`} />
           </div>
         ))}
       </div>
 
-      <button onClick={save} disabled={saving} className="px-4 py-2.5 bg-[#111111] text-white rounded-lg text-sm font-semibold disabled:opacity-60 border-none cursor-pointer">{saving ? "Saving…" : "Save settings"}</button>
+      <button onClick={save} disabled={saving} className="w-full sm:w-auto px-5 py-3 sm:py-2.5 bg-[#111111] text-white rounded-lg text-sm font-semibold disabled:opacity-60 border-none cursor-pointer">{saving ? "Saving…" : "Save settings"}</button>
       {status && <p role="status" className="text-sm text-muted mt-3">{status}</p>}
     </div>
   );

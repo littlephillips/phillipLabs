@@ -29,7 +29,7 @@ function BookButton({ className = "" }) {
       rel="noopener noreferrer"
       className={`items-center justify-center bg-accent-strong text-white font-semibold no-underline transition-[filter,transform] hover:bg-accent-hover ${className}`}
     >
-      {hasScheduler ? "Book a call" : "WhatsApp us"}
+      {hasScheduler ? "Book a call" : <>WhatsApp<span className="hidden sm:inline">&nbsp;us</span></>}
     </a>
   );
 }
@@ -77,15 +77,15 @@ export default function Navbar() {
   return (
     <>
       <header className={`sticky top-0 z-[100] bg-white/95 backdrop-blur transition-shadow ${scrolled ? "shadow-[0_8px_24px_-12px_rgba(40,28,8,0.3)]" : "shadow-[0_6px_14px_-12px_rgba(40,28,8,0.25)]"}`}>
-        <Wrap className="flex items-center justify-between h-[60px] lg:h-[68px]">
-          <Link to="/" onClick={logoClick} aria-label="phillipLabs home" className="flex items-center gap-[9px] no-underline rounded-md">
+        <Wrap className="flex items-center justify-between gap-3 h-[60px] lg:h-[68px]">
+          <Link to="/" onClick={logoClick} aria-label="phillipLabs home" className="flex items-center gap-[9px] no-underline rounded-md shrink-0">
             <img src="/assets/img/logo-mark.png" alt="" width="28" height="28" className="w-7 h-7 object-contain rounded-[7px] bg-ink" />
-            <span className="font-bold text-[1.12rem] tracking-[-0.01em] text-ink whitespace-nowrap">
+            <span className="font-bold text-base sm:text-[1.12rem] tracking-[-0.01em] text-ink whitespace-nowrap">
               phillip<span className="text-accent-strong">Labs</span>
             </span>
           </Link>
-          <span className="lg:hidden flex items-center gap-3 mr-auto ml-3">
-            <span className="w-px h-4 bg-line-strong" aria-hidden="true" />
+          <span className="lg:hidden flex items-center gap-2.5 mr-auto ml-2 min-w-0">
+            <span className="hidden sm:block w-px h-4 bg-line-strong shrink-0" aria-hidden="true" />
             <Availability short />
           </span>
 
@@ -113,7 +113,7 @@ export default function Navbar() {
           <BookButton className="hidden lg:inline-flex px-5 py-2.5 rounded-lg text-sm" />
 
           {/* Mobile: quiet top bar. Navigation lives in the bottom tab bar. */}
-          <BookButton className="lg:hidden inline-flex px-3.5 py-2 rounded-lg text-xs whitespace-nowrap" />
+          <BookButton className="lg:hidden inline-flex shrink-0 ml-2 px-3.5 py-2 rounded-lg text-xs whitespace-nowrap" />
         </Wrap>
         {/* Soft fading edge so the bar clearly ends where the page begins */}
         <span aria-hidden="true" className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-ink/20 to-transparent" />

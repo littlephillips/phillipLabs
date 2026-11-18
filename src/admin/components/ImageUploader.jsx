@@ -39,7 +39,7 @@ export default function ImageUploader({ value, onChange, folder }) {
           type="button"
           onClick={() => inputRef.current?.click()}
           disabled={uploading}
-          className="w-full max-w-sm h-40 border-2 border-dashed border-line-strong rounded-lg flex flex-col items-center justify-center gap-2 text-muted text-sm hover:border-accent hover:text-accent transition-colors disabled:opacity-60"
+          className="w-full max-w-sm h-32 sm:h-40 border-2 border-dashed border-line-strong rounded-lg flex flex-col items-center justify-center gap-2 text-muted text-sm hover:border-accent hover:text-accent transition-colors disabled:opacity-60"
         >
           {uploading ? (
             <Loader2 size={22} className="animate-spin" />

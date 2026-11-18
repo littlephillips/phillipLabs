@@ -22,11 +22,11 @@ export default function ProjectsList() {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-semibold tracking-[-0.02em]">Projects</h1>
+      <div className="flex flex-wrap items-center justify-between gap-3 mb-5 sm:mb-6">
+        <h1 className="text-xl sm:text-2xl font-semibold tracking-[-0.02em]">Projects</h1>
         <Link
           to="/admin/projects/new"
-          className="flex items-center gap-1.5 bg-accent text-white text-sm font-semibold px-4 py-2 rounded-lg hover:brightness-105"
+          className="flex items-center justify-center gap-1.5 bg-accent text-white text-sm font-semibold px-4 py-2.5 rounded-lg whitespace-nowrap hover:brightness-105"
         >
           <Plus size={16} /> New project
         </Link>
@@ -39,8 +39,8 @@ export default function ProjectsList() {
 
       <div className="divide-y divide-line border border-line rounded-xl bg-white overflow-hidden">
         {projects?.map((project) => (
-          <div key={project.id} className="flex items-center gap-4 px-5 py-4">
-            <GripVertical size={16} className="text-line-strong shrink-0" />
+          <div key={project.id} className="flex items-center gap-2 sm:gap-4 px-4 sm:px-5 py-3.5 sm:py-4">
+            <GripVertical size={16} className="hidden sm:block text-line-strong shrink-0" />
             {project.img && (
               <img
                 src={project.img}
@@ -49,10 +49,10 @@ export default function ProjectsList() {
               />
             )}
             <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2">
-                <span className="font-medium text-sm truncate">{project.title}</span>
+              <div className="flex items-center gap-2 min-w-0">
+                <span className="font-medium text-sm truncate min-w-0">{project.title}</span>
                 <span
-                  className={`text-[11px] font-semibold px-1.5 py-0.5 rounded ${
+                  className={`shrink-0 text-[11px] font-semibold px-1.5 py-0.5 rounded ${
                     project.published
                       ? "bg-green-100 text-green-700"
                       : "bg-neutral-100 text-neutral-500"
@@ -65,13 +65,13 @@ export default function ProjectsList() {
             </div>
             <Link
               to={`/admin/projects/${project.id}`}
-              className="p-2 rounded-lg text-muted hover:bg-[#f1f1f1] hover:text-ink"
+              className="shrink-0 p-2.5 rounded-lg text-muted hover:bg-[#f1f1f1] hover:text-ink"
             >
               <Pencil size={16} />
             </Link>
             <button
               onClick={() => handleDelete(project.id, project.title)}
-              className="p-2 rounded-lg text-muted hover:bg-red-50 hover:text-red-600"
+              className="shrink-0 p-2.5 rounded-lg text-muted hover:bg-red-50 hover:text-red-600"
             >
               <Trash2 size={16} />
             </button>

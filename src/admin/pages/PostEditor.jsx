@@ -83,16 +83,16 @@ export default function PostEditor() {
 
   return (
     <div>
-      <h1 className="text-2xl font-semibold tracking-[-0.02em] mb-6">
+      <h1 className="text-xl sm:text-2xl font-semibold tracking-[-0.02em] mb-5 sm:mb-6">
         {isNew ? "New post" : "Edit post"}
       </h1>
 
-      <div className="grid grid-cols-2 gap-4 mb-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
         <Field label="Title">
           <input
             value={form.title}
             onChange={(e) => set("title", e.target.value)}
-            className="w-full px-3 py-2.5 border border-line-strong rounded-lg text-sm"
+            className="w-full px-3 py-2.5 border border-line-strong rounded-lg text-base sm:text-sm bg-white"
           />
         </Field>
         <Field label="Slug">
@@ -107,13 +107,13 @@ export default function PostEditor() {
         </Field>
       </div>
 
-      <div className="grid grid-cols-3 gap-4 mb-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
         <Field label="Date">
           <input
             type="date"
             value={form.date}
             onChange={(e) => set("date", e.target.value)}
-            className="w-full px-3 py-2.5 border border-line-strong rounded-lg text-sm"
+            className="w-full px-3 py-2.5 border border-line-strong rounded-lg text-base sm:text-sm bg-white"
           />
         </Field>
         <Field label="Tag">
@@ -121,7 +121,7 @@ export default function PostEditor() {
             value={form.tag}
             onChange={(e) => set("tag", e.target.value)}
             placeholder="e.g. Guide, Case Study"
-            className="w-full px-3 py-2.5 border border-line-strong rounded-lg text-sm"
+            className="w-full px-3 py-2.5 border border-line-strong rounded-lg text-base sm:text-sm bg-white"
           />
         </Field>
         <Field label="Published">
@@ -141,7 +141,7 @@ export default function PostEditor() {
           value={form.excerpt}
           onChange={(e) => set("excerpt", e.target.value)}
           rows={2}
-          className="w-full px-3 py-2.5 border border-line-strong rounded-lg text-sm"
+          className="w-full px-3 py-2.5 border border-line-strong rounded-lg text-base sm:text-sm bg-white"
         />
       </Field>
 
@@ -168,7 +168,7 @@ export default function PostEditor() {
         </div>
         {preview ? (
           <div
-            className="prose max-w-none border border-line-strong rounded-lg px-4 py-3 min-h-[300px]"
+            className="prose max-w-none border border-line-strong rounded-lg px-4 py-3 min-h-[240px] sm:min-h-[300px]"
             dangerouslySetInnerHTML={{ __html: renderMarkdown(form.body) }}
           />
         ) : (
@@ -182,7 +182,7 @@ export default function PostEditor() {
       </div>
 
       {error && <div role="alert" className="mt-4 text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">{error}</div>}
-      <div className="flex gap-3 mt-6">
+      <div className="flex flex-col-reverse sm:flex-row gap-3 mt-6 [&>button]:w-full sm:[&>button]:w-auto">
         <button
           onClick={() => handleSave(false)}
           disabled={saving}

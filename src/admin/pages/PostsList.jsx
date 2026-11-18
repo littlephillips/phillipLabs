@@ -49,21 +49,21 @@ export default function PostsList() {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-semibold tracking-[-0.02em]">Blog Posts</h1>
-        <div className="flex gap-2">
+      <div className="flex flex-wrap items-center justify-between gap-3 mb-5 sm:mb-6">
+        <h1 className="text-xl sm:text-2xl font-semibold tracking-[-0.02em]">Blog Posts</h1>
+        <div className="flex flex-wrap gap-2">
           {LEGACY_MD_POSTS.length > 0 && (
             <button
               onClick={handleImportLegacy}
               disabled={importing}
-              className="flex items-center gap-1.5 border border-line-strong text-sm font-semibold px-4 py-2 rounded-lg hover:bg-[#f7f7f7] disabled:opacity-60"
+              className="flex items-center justify-center gap-1.5 border border-line-strong bg-white text-sm font-semibold px-4 py-2.5 rounded-lg whitespace-nowrap hover:bg-[#f7f7f7] disabled:opacity-60"
             >
               <Import size={16} /> {importing ? "Importing…" : "Import legacy posts"}
             </button>
           )}
           <Link
             to="/admin/posts/new"
-            className="flex items-center gap-1.5 bg-accent text-white text-sm font-semibold px-4 py-2 rounded-lg hover:brightness-105"
+            className="flex items-center justify-center gap-1.5 bg-accent text-white text-sm font-semibold px-4 py-2.5 rounded-lg whitespace-nowrap hover:brightness-105"
           >
             <Plus size={16} /> New post
           </Link>
@@ -77,12 +77,12 @@ export default function PostsList() {
 
       <div className="divide-y divide-line border border-line rounded-xl bg-white overflow-hidden">
         {posts?.map((post) => (
-          <div key={post.id} className="flex items-center gap-4 px-5 py-4">
+          <div key={post.id} className="flex items-center gap-2 sm:gap-4 px-4 sm:px-5 py-3.5 sm:py-4">
             <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2">
-                <span className="font-medium text-sm truncate">{post.title}</span>
+              <div className="flex items-center gap-2 min-w-0">
+                <span className="font-medium text-sm truncate min-w-0">{post.title}</span>
                 <span
-                  className={`text-[11px] font-semibold px-1.5 py-0.5 rounded ${
+                  className={`shrink-0 text-[11px] font-semibold px-1.5 py-0.5 rounded ${
                     post.published
                       ? "bg-green-100 text-green-700"
                       : "bg-neutral-100 text-neutral-500"
@@ -95,13 +95,13 @@ export default function PostsList() {
             </div>
             <Link
               to={`/admin/posts/${post.id}`}
-              className="p-2 rounded-lg text-muted hover:bg-[#f1f1f1] hover:text-ink"
+              className="shrink-0 p-2.5 rounded-lg text-muted hover:bg-[#f1f1f1] hover:text-ink"
             >
               <Pencil size={16} />
             </Link>
             <button
               onClick={() => handleDelete(post.id, post.title)}
-              className="p-2 rounded-lg text-muted hover:bg-red-50 hover:text-red-600"
+              className="shrink-0 p-2.5 rounded-lg text-muted hover:bg-red-50 hover:text-red-600"
             >
               <Trash2 size={16} />
             </button>

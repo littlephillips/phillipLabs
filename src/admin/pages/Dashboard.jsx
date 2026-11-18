@@ -19,18 +19,18 @@ export default function Dashboard() {
 
   return (
     <div>
-      <h1 className="text-2xl font-semibold tracking-[-0.02em] mb-6">Dashboard</h1>
+      <h1 className="text-xl sm:text-2xl font-semibold tracking-[-0.02em] mb-5 sm:mb-6">Dashboard</h1>
 
-      <div className="grid grid-cols-3 gap-4 mb-8">
+      <div className="grid grid-cols-3 gap-2.5 sm:gap-4 mb-6 sm:mb-8">
         <StatCard label="Blog posts" value={stats?.posts} />
         <StatCard label="Published" value={stats?.published} />
         <StatCard label="Projects" value={stats?.projects} />
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid sm:grid-cols-2 gap-3 sm:gap-4">
         <Link
           to="/admin/posts/new"
-          className="flex items-center gap-3 border border-line rounded-xl p-5 hover:border-accent transition-colors"
+          className="flex items-center gap-3 border border-line bg-white rounded-xl p-4 sm:p-5 hover:border-accent transition-colors"
         >
           <FileText size={20} className="text-accent" />
           <div>
@@ -41,7 +41,7 @@ export default function Dashboard() {
         </Link>
         <Link
           to="/admin/projects/new"
-          className="flex items-center gap-3 border border-line rounded-xl p-5 hover:border-accent transition-colors"
+          className="flex items-center gap-3 border border-line bg-white rounded-xl p-4 sm:p-5 hover:border-accent transition-colors"
         >
           <Briefcase size={20} className="text-accent" />
           <div>
@@ -57,11 +57,11 @@ export default function Dashboard() {
 
 function StatCard({ label, value }) {
   return (
-    <div className="border border-line rounded-xl p-5 bg-white">
+    <div className="border border-line rounded-xl p-3.5 sm:p-5 bg-white min-w-0">
       <div className="text-2xl font-semibold tracking-[-0.02em]">
         {value ?? "–"}
       </div>
-      <div className="text-xs text-muted mt-1">{label}</div>
+      <div className="text-xs text-muted mt-1 truncate">{label}</div>
     </div>
   );
 }

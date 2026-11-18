@@ -79,16 +79,16 @@ export default function ProjectEditor() {
 
   return (
     <div>
-      <h1 className="text-2xl font-semibold tracking-[-0.02em] mb-6">
+      <h1 className="text-xl sm:text-2xl font-semibold tracking-[-0.02em] mb-5 sm:mb-6">
         {isNew ? "New project" : "Edit project"}
       </h1>
 
-      <div className="grid grid-cols-2 gap-4 mb-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
         <Field label="Title">
           <input
             value={form.title}
             onChange={(e) => set("title", e.target.value)}
-            className="w-full px-3 py-2.5 border border-line-strong rounded-lg text-sm"
+            className="w-full px-3 py-2.5 border border-line-strong rounded-lg text-base sm:text-sm bg-white"
           />
         </Field>
         <Field label="Category tag">
@@ -96,12 +96,12 @@ export default function ProjectEditor() {
             value={form.tag}
             onChange={(e) => set("tag", e.target.value)}
             placeholder="e.g. Logistics"
-            className="w-full px-3 py-2.5 border border-line-strong rounded-lg text-sm"
+            className="w-full px-3 py-2.5 border border-line-strong rounded-lg text-base sm:text-sm bg-white"
           />
         </Field>
       </div>
 
-      <div className="grid grid-cols-2 gap-4 mb-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
         <Field label="Live URL">
           <input
             value={form.url}
@@ -124,17 +124,17 @@ export default function ProjectEditor() {
           value={form.desc}
           onChange={(e) => set("desc", e.target.value)}
           rows={2}
-          className="w-full px-3 py-2.5 border border-line-strong rounded-lg text-sm"
+          className="w-full px-3 py-2.5 border border-line-strong rounded-lg text-base sm:text-sm bg-white"
         />
       </Field>
 
-      <div className="grid grid-cols-2 gap-4 mt-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
         <Field label="Display order">
           <input
             type="number"
             value={form.order}
             onChange={(e) => set("order", e.target.value)}
-            className="w-full px-3 py-2.5 border border-line-strong rounded-lg text-sm"
+            className="w-full px-3 py-2.5 border border-line-strong rounded-lg text-base sm:text-sm bg-white"
           />
         </Field>
         <Field label="Type (drives the Work filter)">
@@ -144,7 +144,7 @@ export default function ProjectEditor() {
               set("kind", e.target.value);
               set("variant", e.target.value === "system" ? "admin" : "");
             }}
-            className="w-full px-3 py-2.5 border border-line-strong rounded-lg text-sm"
+            className="w-full px-3 py-2.5 border border-line-strong rounded-lg text-base sm:text-sm bg-white"
           >
             <option value="website">Website (customer-facing)</option>
             <option value="system">System / dashboard</option>
@@ -175,8 +175,9 @@ export default function ProjectEditor() {
         </Field>
       </div>
 
-      <div className="flex gap-3 mt-6">
-        {error && <div role="alert" className="mb-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">{error}</div>}
+
+      {error && <div role="alert" className="mt-4 text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">{error}</div>}
+      <div className="flex flex-col-reverse sm:flex-row gap-3 mt-6 [&>button]:w-full sm:[&>button]:w-auto">
         <button
           onClick={handleSave}
           disabled={saving}

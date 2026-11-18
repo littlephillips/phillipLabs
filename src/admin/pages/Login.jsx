@@ -1,15 +1,28 @@
 import { useState } from "react";
 import { Navigate, useLocation } from "react-router-dom";
 import { useAuth } from "../AuthContext";
+import { NotConfigured } from "../AdminGuard";
+
+const MESSAGES = {
+  "auth/invalid-credential": "Wrong email or password.",
+  "auth/wrong-password": "Wrong email or password.",
+  "auth/user-not-found": "No account with that email. Create the user in Firebase, Authentication.",
+  "auth/too-many-requests": "Too many attempts. Wait a few minutes and try again.",
+  "auth/unauthorized-domain": "This domain is not allowed. Add it in Firebase, Authentication, Settings, Authorized domains.",
+  "auth/invalid-api-key": "The Firebase API key is wrong or missing in this build.",
+  "auth/operation-not-allowed": "Email/Password sign-in is off. Enable it in Firebase, Authentication, Sign-in method.",
+  "auth/network-request-failed": "Network problem. Check your connection and try again.",
+};
 
 export default function Login() {
-  const { user, login } = useAuth();
+  const { user, login, configured } = useAuth();
   const location = useLocation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
+  if (!configured) return <NotConfigured />;
   if (user) {
     const dest = location.state?.from?.pathname || "/admin";
     return <Navigate to={dest} replace />;
@@ -22,17 +35,17 @@ export default function Login() {
     try {
       await login(email, password);
     } catch (err) {
-      setError("Invalid email or password.");
+      setError(MESSAGES[err?.code] || `Sign-in failed (${err?.code || "unknown error"}).`);
     } finally {
       setSubmitting(false);
     }
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#fafafa] px-6">
+    <div className="min-h-svh flex items-center justify-center bg-[#fafafa] px-4">
       <form
         onSubmit={handleSubmit}
-        className="w-full max-w-sm bg-white border border-line rounded-xl p-8"
+        className="w-full max-w-sm bg-white border border-line rounded-xl p-5 sm:p-8"
       >
         <div className="mb-6">
           <span className="font-semibold text-lg tracking-[-0.01em]">
@@ -56,7 +69,7 @@ export default function Login() {
           required
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="w-full mb-4 px-3 py-2.5 border border-line-strong rounded-lg text-sm focus:outline-none focus-visible:outline-2 focus-visible:outline-accent"
+          className="w-full mb-4 px-3 py-2.5 border border-line-strong rounded-lg text-base sm:text-sm focus:outline-none focus-visible:outline-2 focus-visible:outline-accent"
         />
 
         <label className="block text-sm font-medium mb-1.5" htmlFor="password">
