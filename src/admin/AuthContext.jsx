@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { onAuthStateChanged, signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore/lite";
-import { db } from "../lib/firebase";
+import { db, firebaseReady } from "../lib/firebase";
 import { auth } from "./auth";
 
 const AuthContext = createContext(null);
@@ -12,9 +12,12 @@ const AuthContext = createContext(null);
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [isAdmin, setIsAdmin] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(firebaseReady);
+  // Why access was denied: "no-admin-doc", "permission-denied", or another Firebase code.
+  const [denied, setDenied] = useState("");
 
   useEffect(() => {
+    if (!auth) return undefined;
     const unsub = onAuthStateChanged(auth, async (firebaseUser) => {
       setUser(firebaseUser);
       if (!firebaseUser) {
@@ -25,8 +28,10 @@ export function AuthProvider({ children }) {
       try {
         const snap = await getDoc(doc(db, "admins", firebaseUser.uid));
         setIsAdmin(snap.exists());
-      } catch {
+        setDenied(snap.exists() ? "" : "no-admin-doc");
+      } catch (err) {
         setIsAdmin(false);
+        setDenied(err?.code || "unknown");
       }
       setLoading(false);
     });
@@ -35,8 +40,9 @@ export function AuthProvider({ children }) {
 
   const login = (email, password) => signInWithEmailAndPassword(auth, email, password);
   const logout = () => signOut(auth);
+  const configured = Boolean(auth);
 
-  return <AuthContext.Provider value={{ user, isAdmin, loading, login, logout }}>{children}</AuthContext.Provider>;
+  return <AuthContext.Provider value={{ user, isAdmin, loading, denied, configured, login, logout }}>{children}</AuthContext.Provider>;
 }
 
 export function useAuth() {
