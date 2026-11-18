@@ -48,4 +48,4 @@ Start at [`systemDocs/README.md`](systemDocs/README.md): positioning, PRD, SRS, 
 
 ## Before going live
 
-Follow `systemDocs/LAUNCH_CHECKLIST.md` (Firebase rules + indexes + admin doc, disable sign-up, Cloudinary preset, env vars on Vercel, domain, re-run Lighthouse on production).
+Follow `systemDocs/LAUNCH_CHECKLIST.md` (Firebase rules + admin doc, disable sign-up, Cloudinary preset, env vars on Vercel, domain, re-run Lighthouse on production).

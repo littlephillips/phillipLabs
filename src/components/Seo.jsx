@@ -2,7 +2,7 @@ import { Helmet } from "react-helmet-async";
 import { siteUrl } from "../config/site";
 
 // One place for per-route metadata. Titles <= 60 chars, descriptions <= 155.
-export default function Seo({ title, description, path = "/", type = "website", noindex = false, children }) {
+export default function Seo({ title, description, path = "/", type = "website", noindex = false, image, children }) {
   const url = siteUrl(path);
   return (
     <Helmet>
@@ -14,6 +14,8 @@ export default function Seo({ title, description, path = "/", type = "website", 
       <meta property="og:description" content={description} />
       <meta property="og:url" content={url} />
       <meta property="og:type" content={type} />
+      {image && <meta property="og:image" content={image} />}
+      {image && <meta name="twitter:image" content={image} />}
       {children}
     </Helmet>
   );

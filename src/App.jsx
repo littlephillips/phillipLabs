@@ -1,5 +1,5 @@
 import { useEffect, lazy, Suspense } from "react";
-import { Routes, Route, useLocation } from "react-router-dom";
+import { Routes, Route, useLocation, useNavigate } from "react-router-dom";
 
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
@@ -24,9 +24,17 @@ import { initAnalyticsIfConsented } from "./utils/consent";
 // load when someone visits /admin. Public visitors never download them.
 const AdminApp = lazy(() => import("./admin/AdminApp"));
 
+// Links written when the site was one long page (e.g. in blog posts) point at "/#contact".
+const LEGACY_HASH = { "#contact": "/contact", "#order": "/contact", "#brief": "/contact" };
+
 function ScrollManager() {
   const { pathname, hash } = useLocation();
+  const navigate = useNavigate();
   useEffect(() => {
+    if (pathname === "/" && LEGACY_HASH[hash]) {
+      navigate(LEGACY_HASH[hash], { replace: true });
+      return undefined;
+    }
     if (hash) {
       const id = hash.slice(1);
       const t = setTimeout(() => document.getElementById(id)?.scrollIntoView({ behavior: "smooth" }), 60);
@@ -34,7 +42,7 @@ function ScrollManager() {
     }
     // Query-only changes (service modal) must not jump to the top.
     window.scrollTo(0, 0);
-  }, [pathname, hash]);
+  }, [pathname, hash, navigate]);
   return null;
 }
 

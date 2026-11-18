@@ -21,13 +21,16 @@ const PROJECTS = collection(db, "projects");
 
 export async function listPublishedProjects() {
   if (!firebaseReady) return [];
-  const q = query(PROJECTS, where("published", "==", true), orderBy("order", "asc"));
-  const snap = await getDocs(q);
-  return snap.docs.map((d) => {
+  // Filter only; sort here. A where + orderBy pair would need a composite index,
+  // and for a handful of projects sorting in the browser is simpler and safer.
+  const snap = await getDocs(query(PROJECTS, where("published", "==", true)));
+  return snap.docs
+    .map((d) => {
     // Tech stack is never shown publicly, even if an old document still has it.
     const { stack: _omit, ...rest } = d.data();
     return { id: d.id, ...rest };
-  });
+    })
+    .sort((a, b) => (Number(a.order) || 0) - (Number(b.order) || 0));
 }
 
 export async function listAllProjects() {

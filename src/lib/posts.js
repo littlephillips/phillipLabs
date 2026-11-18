@@ -24,9 +24,9 @@ const POSTS = collection(db, "posts");
 
 export async function listPublishedPosts() {
   if (!firebaseReady) return [];
-  const q = query(POSTS, where("published", "==", true), orderBy("date", "desc"));
-  const snap = await getDocs(q);
-  return snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+  // Filter only, then sort newest first here: no composite index needed.
+  const snap = await getDocs(query(POSTS, where("published", "==", true)));
+  return snap.docs.map((d) => ({ id: d.id, ...d.data() })).sort((a, b) => String(b.date).localeCompare(String(a.date)));
 }
 
 export async function listAllPosts() {

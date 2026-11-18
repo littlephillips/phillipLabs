@@ -28,6 +28,7 @@ export default function ProjectEditor() {
   const [form, setForm] = useState(EMPTY);
   const [loading, setLoading] = useState(!isNew);
   const [saving, setSaving] = useState(false);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     if (isNew) return;
@@ -45,6 +46,11 @@ export default function ProjectEditor() {
   }
 
   async function handleSave() {
+    setError("");
+    if (!form.title.trim()) {
+      setError("Add a title first.");
+      return;
+    }
     setSaving(true);
     const data = {
       ...form,
@@ -57,6 +63,13 @@ export default function ProjectEditor() {
         await updateProject(id, data);
       }
       navigate("/admin/projects");
+    } catch (err) {
+      // Without this a refused write (rules, expired login) failed silently and nothing was saved.
+      setError(
+        err?.code === "permission-denied"
+          ? "Not saved: Firestore refused the write. Publish firestore.rules and check your admins/{uid} record."
+          : `Not saved (${err?.code || err?.message || "unknown error"}). Check your connection and try again.`
+      );
     } finally {
       setSaving(false);
     }
@@ -163,6 +176,7 @@ export default function ProjectEditor() {
       </div>
 
       <div className="flex gap-3 mt-6">
+        {error && <div role="alert" className="mb-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">{error}</div>}
         <button
           onClick={handleSave}
           disabled={saving}

@@ -28,6 +28,7 @@ export default function PostEditor() {
   const [form, setForm] = useState(EMPTY);
   const [loading, setLoading] = useState(!isNew);
   const [saving, setSaving] = useState(false);
+  const [error, setError] = useState("");
   const [slugTouched, setSlugTouched] = useState(false);
   const [preview, setPreview] = useState(false);
 
@@ -53,6 +54,11 @@ export default function PostEditor() {
   }
 
   async function handleSave(publish) {
+    setError("");
+    if (!form.title.trim() || !form.slug.trim()) {
+      setError("Add a title and a slug first.");
+      return;
+    }
     setSaving(true);
     const data = { ...form, published: publish ?? form.published };
     try {
@@ -62,6 +68,12 @@ export default function PostEditor() {
         await updatePost(id, data);
       }
       navigate("/admin/posts");
+    } catch (err) {
+      setError(
+        err?.code === "permission-denied"
+          ? "Not saved: Firestore refused the write. Publish firestore.rules and check your admins/{uid} record."
+          : `Not saved (${err?.code || err?.message || "unknown error"}). Check your connection and try again.`
+      );
     } finally {
       setSaving(false);
     }
@@ -169,6 +181,7 @@ export default function PostEditor() {
         )}
       </div>
 
+      {error && <div role="alert" className="mt-4 text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">{error}</div>}
       <div className="flex gap-3 mt-6">
         <button
           onClick={() => handleSave(false)}
